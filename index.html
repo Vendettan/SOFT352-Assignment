@@ -4,19 +4,20 @@
   <title>Blackjack Client</title>
   <h1>Blackjack<h1>
   <script src="blackjack.js"></script>
-  <link rel="stylesheet" href="blackjack.css" >
+  <link rel="stylesheet" href="blackjack.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
   <body>
     <div class="dealer">
-      <canvas id="dealerCanvas">
+      <canvas id="dealerCanvas" width=50px height=80px>Look here is a canvas</canvas>
     </div>
     <div class="player"></div>
     <div class="actions">
       <button id="buttonHit">Hit</button>
       <button id="buttonStand">Stand</button>
       <button id="buttonDouble">Double Down</button>
-      <button id="buttonSplit">Split</button>
+      <button id="buttonSplit" onclick="getImage()">Split</button>
     </div>
 
 

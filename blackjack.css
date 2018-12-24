@@ -37,7 +37,6 @@
 
 .actions button:hover
 {
-  transition-duration: 0.2s;
   background-color: #4CAF50;
   color: white;
   border-color: #000000;
@@ -46,7 +45,7 @@
 
 .actions button:active
 {
-  background-color: #3C8A3F;
+  background-color: #1C8A3F;
 }
 
 #buttonDouble
