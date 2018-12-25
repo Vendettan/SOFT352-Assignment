@@ -49,8 +49,12 @@ function GetDeck()
   var deck = [];
   path = "CardImages/Deck"
   var fs = require("fs");
-  deck = fs.readdirSync(path);
-  console.log(deck);
+  files = fs.readdirSync(path);
+  for (var i in files)
+  {
+    var tempCard = new Card(files[i]);
+    deck.push(tempCard);
+  }
 }
 
 class Card
@@ -61,8 +65,13 @@ class Card
     this.value = split[0].toLowerCase();
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
-    var img = document.createElement('img');
-    img.src = "CardImages/" + name;
-    this.image = img;
+    this.image = name;
   }
 }
+
+// function GetImage()
+// {
+//   var img = document.createElement('img');
+//   img.src = "CardImages/" + name;
+//   this.image = img;
+// }
