@@ -9,18 +9,15 @@
 </head>
 
   <body>
-    <div class="dealer">
-      <canvas id="dealerCanvas" width=50px height=80px>Look here is a canvas</canvas>
-    </div>
-    <div class="player"></div>
+    <canvas id="MainCanvas" width=100px height=400px></canvas>
     <div class="actions">
       <button id="buttonHit">Hit</button>
       <button id="buttonStand">Stand</button>
       <button id="buttonDouble">Double Down</button>
-      <button id="buttonSplit" onclick="getImage()">Split</button>
+      <button id="buttonSplit">Split</button>
     </div>
 
-    <input type="text" placeholder="Your message here" id="text">
+    <!-- <input type="text" placeholder="Your message here" id="text">
     <button>Send</button>
 
     <script>
@@ -37,7 +34,7 @@
         var text = document.getElementById('text').value;
         socket.send(text)
       };
-    </script>
+    </script> -->
 
 </body>
 </html>

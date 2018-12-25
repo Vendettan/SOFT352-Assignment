@@ -1,27 +1,30 @@
-function Card(value, suit)
+window.onload = function(evt)
 {
-  this.value = value;
-  this.suit = suit;
-  imageName = (value + "_of_" + suit);
-  var img = document.createElement('img');
-  img.src = "CardImages/" + imageName + ".png"
-  this.image = img;
-}
-
-$(document).ready(function()
-{
-  var aceofspades = new Card("ace", "spades");
+  var queenofhearts = new Card("queen_of_hearts.png")
   var canvas = $("#dealerCanvas");
   var context = canvas[0].getContext("2d");
-  context.drawImage(aceofspades.image,0,0,50,80);
+  context.drawImage(queenofhearts.image,0,0,50,80);
 
   getDeck();
-});
+}
+
+class Card
+{
+  constructor(name)
+  {
+    var split = name.split("_");
+    this.value = split[0].toLowerCase();
+    var suitSplit = split[2].split(".");
+    this.suit = suitSplit[0].toLowerCase();
+    var img = document.createElement('img');
+    img.src = "CardImages/" + name;
+    this.image = img;
+  }
+}
+
 
 function getImage()
 {
-
-
 
 }
 
