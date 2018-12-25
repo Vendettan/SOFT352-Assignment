@@ -2,21 +2,22 @@
 <html>
 <head>
   <title>Blackjack Client</title>
-  <h1>Blackjack<h1>
+  <h1>Blackjack</h1>
   <script src="blackjack.js"></script>
   <link rel="stylesheet" href="blackjack.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="server.js"></script>
 </head>
 
   <body>
-    <canvas id="MainCanvas" width=100px height=400px></canvas>
+    <canvas id="MainCanvas" width=400px height=400px></canvas>
     <div class="actions">
       <button id="buttonHit">Hit</button>
       <button id="buttonStand">Stand</button>
       <button id="buttonDouble">Double Down</button>
       <button id="buttonSplit">Split</button>
     </div>
-
+    
     <script>
       var socket = new WebSocket("ws://localhost:9000");
     </script>

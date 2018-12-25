@@ -65,13 +65,13 @@ class Card
     this.value = split[0].toLowerCase();
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
-    this.image = name;
+    this.image = GetImage(name);
   }
 }
 
-// function GetImage()
-// {
-//   var img = document.createElement('img');
-//   img.src = "CardImages/" + name;
-//   this.image = img;
-// }
+function GetImage(name)
+{
+  var img = document.createElement('img');
+  img.src = "CardImages/" + name;
+  this.image = img;
+}
