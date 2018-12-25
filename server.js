@@ -11,6 +11,7 @@ var server = http.createServer(function(request, response)
 server.listen(9000, function()
 {
   console.log(new Date() + " - listening on port 9000");
+  GetDeck();
 });
 
 var socket = new WebSocketServer({
@@ -26,6 +27,7 @@ socket.on("request", function(request)
   {
     console.log(new Date() + " - Connection closed");
     connections.pop();
+    ShowConnections();
   });
   ShowConnections();
 });
@@ -40,6 +42,15 @@ function ShowConnections()
   }
 
   console.log("Connections: " + counter);
+}
+
+function GetDeck()
+{
+  var deck = [];
+  path = "CardImages/Deck"
+  var fs = require("fs");
+  deck = fs.readdirSync(path);
+  console.log(deck);
 }
 
 class Card
