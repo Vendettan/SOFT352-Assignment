@@ -1,7 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var http = require("http");
 
-var connections = {};
+var connections = [];
 
 var server = http.createServer(function(request, response)
 {
@@ -20,23 +20,38 @@ var socket = new WebSocketServer({
 socket.on("request", function(request)
 {
   var connection = request.accept(null, request.origin);
+  connections.push("Connection");
 
   connection.on("close", function(reasonCode, description)
   {
     console.log(new Date() + " - Connection closed");
     connections.pop();
   });
-
-  // Message & keeping track of connections
-  connection.on("message", function(message)
-  {
-    console.log(message.utf8Data);
-    connection.sendUTF(message.utf8Data);
-
-    connections.push("Connection");
-    for (var client in connections)
-    {
-      console.log(client);
-    }
-  });
+  ShowConnections();
 });
+
+function ShowConnections()
+{
+  counter = 0;
+
+  for (var client in connections)
+  {
+    counter += 1;
+  }
+
+  console.log("Connections: " + counter);
+}
+
+class Card
+{
+  constructor(name)
+  {
+    var split = name.split("_");
+    this.value = split[0].toLowerCase();
+    var suitSplit = split[2].split(".");
+    this.suit = suitSplit[0].toLowerCase();
+    var img = document.createElement('img');
+    img.src = "CardImages/" + name;
+    this.image = img;
+  }
+}

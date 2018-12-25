@@ -8,19 +8,7 @@ window.onload = function(evt)
   getDeck();
 }
 
-class Card
-{
-  constructor(name)
-  {
-    var split = name.split("_");
-    this.value = split[0].toLowerCase();
-    var suitSplit = split[2].split(".");
-    this.suit = suitSplit[0].toLowerCase();
-    var img = document.createElement('img');
-    img.src = "CardImages/" + name;
-    this.image = img;
-  }
-}
+
 
 
 function getImage()
