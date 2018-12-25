@@ -11,7 +11,11 @@ var server = http.createServer(function(request, response)
 server.listen(9000, function()
 {
   console.log(new Date() + " - listening on port 9000");
-  GetDeck();
+  // if (typeof document !== 'undefined')
+  // {
+  //   console.log("loaded");
+    GetDeck();
+  // }
 });
 
 var socket = new WebSocketServer({
@@ -55,6 +59,10 @@ function GetDeck()
     var tempCard = new Card(files[i]);
     deck.push(tempCard);
   }
+  for (var i in deck)
+  {
+    console.log("card name = " + deck[i].image);
+  }
 }
 
 class Card
@@ -71,7 +79,9 @@ class Card
 
 function GetImage(name)
 {
-  var img = document.createElement('img');
-  img.src = "CardImages/" + name;
-  this.image = img;
+
+    var img = document.createElement('img');
+    img.src = "CardImages/" + name;
+    this.image = img;
+
 }
