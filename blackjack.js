@@ -8,7 +8,7 @@ function Card(value, suit)
   this.image = img;
 }
 
-function getImage()
+$(document).ready(function()
 {
   var aceofspades = new Card("ace", "spades");
   var canvas = $("#dealerCanvas");
@@ -16,6 +16,13 @@ function getImage()
   context.drawImage(aceofspades.image,0,0,50,80);
 
   getDeck();
+});
+
+function getImage()
+{
+
+
+
 }
 
 function getDeck()
@@ -23,7 +30,7 @@ function getDeck()
   var deck = [];
   path = "CardImages/"
 
-  var fs = require('fs');
+  var fs = require("fs");
   var files = fs.readdirSync('CardImages');
 }
 
