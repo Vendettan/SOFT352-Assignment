@@ -2,6 +2,7 @@ var WebSocketServer = require('websocket').server;
 var http = require("http");
 
 var connections = [];
+var deck = [];
 
 var server = http.createServer(function(request, response)
 {
@@ -11,11 +12,7 @@ var server = http.createServer(function(request, response)
 server.listen(9000, function()
 {
   console.log(new Date() + " - listening on port 9000");
-  // if (typeof document !== 'undefined')
-  // {
-  //   console.log("loaded");
-    GetDeck();
-  // }
+  GetDeck();
 });
 
 var socket = new WebSocketServer({
@@ -24,8 +21,18 @@ var socket = new WebSocketServer({
 
 socket.on("request", function(request)
 {
+  counter = 1;
   var connection = request.accept(null, request.origin);
-  connections.push("Connection");
+  for (var client in connections)
+  {
+    counter += 1;
+  }
+  connections.push(connection);
+
+  console.log("NEW CONNECTION");
+
+  // Send client the deck
+  connection.emit("send deck");
 
   connection.on("close", function(reasonCode, description)
   {
@@ -38,19 +45,16 @@ socket.on("request", function(request)
 
 function ShowConnections()
 {
-  counter = 0;
+  console.log("Connections: " + connections.length);
 
-  for (var client in connections)
-  {
-    counter += 1;
-  }
-
-  console.log("Connections: " + counter);
+  // for (var i in connections)
+  // {
+  //   console.log("Client: " + connections[i]);
+  // }
 }
 
 function GetDeck()
 {
-  var deck = [];
   path = "CardImages/Deck"
   var fs = require("fs");
   files = fs.readdirSync(path);
@@ -61,7 +65,17 @@ function GetDeck()
   }
   for (var i in deck)
   {
-    console.log("card name = " + deck[i].image);
+    console.log("card name = " + deck[i].value + " of " + deck[i].suit);
+  }
+}
+
+class Player
+{
+  constructor(socket, id, name)
+  {
+    this.socket = socket;
+    this.name = name;
+    this.id = id;
   }
 }
 
@@ -73,15 +87,12 @@ class Card
     this.value = split[0].toLowerCase();
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
-    this.image = GetImage(name);
+    this.image = null;
+    // GetImage(name);
   }
-}
 
-function GetImage(name)
-{
-
-    var img = document.createElement('img');
-    img.src = "CardImages/" + name;
-    this.image = img;
-
+  Send(command, message)
+  {
+    this.socket.emit(command, message);
+  }
 }
