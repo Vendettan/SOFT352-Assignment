@@ -10,12 +10,27 @@
 </head>
 
   <body>
-    <canvas id="MainCanvas" width=1200px height=600px></canvas>
-    <div class="actions">
-      <button id="buttonHit">Hit</button>
-      <button id="buttonStand">Stand</button>
-      <button id="buttonDouble">Double Down</button>
-      <button id="buttonSplit">Split</button>
+    <div class="lobby">
+      <div class="lobbyButtons">
+        <button id="buttonCreate">Create Lobby</button>
+        <button id="buttonJoin">Join Lobby</button>
+      </div>
+      <div class="create">
+        <h2>Players</h2>
+        <button id="buttonPlayer1">1 Player</button>
+        <button id="buttonPlayer2">2 Player</button>
+        <button id="buttonPlayer3">3 Player</button>
+        <button id="buttonPlayer4">4 Player</button>
+      </div>
+    </div>
+    <div class="game">
+      <canvas id="MainCanvas" width=1200px height=600px></canvas>
+      <div class="actions">
+        <button id="buttonHit">Hit</button>
+        <button id="buttonStand">Stand</button>
+        <button id="buttonDouble">Double Down</button>
+        <button id="buttonSplit">Split</button>
+      </div>
     </div>
 
 </body>

@@ -18,12 +18,13 @@ io.sockets.on('connection', function(socket)
   ShowConnections();
 
   socket.emit('connect');
-  socket.emit('update', connections.length)
+  socket.emit('update', connections.length);
 
   socket.on('disconnect', function()
   {
     connections.pop();
     ShowConnections();
+    socket.emit('update', connections.length);
   });
 })
 

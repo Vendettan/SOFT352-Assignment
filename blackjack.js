@@ -12,28 +12,31 @@ var play4 = [85,200,355,470,625,740,895,1010];
 window.onload = function(evt)
 {
   CreateNetwork();
-  var deckImage = document.createElement('img');
-  deckImage.src = "CardImages/deck_bordered.png";
-  var cardImage = document.createElement('img');
-  cardImage.src = "CardImages/Deck/2_of_clubs.png";
+  ShowPlayers();
+  ShowCards();
 
+  // Get game menu
+  var game = $(".game");
+  // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
   // Deck
-  context.drawImage(deckImage,10,10,135,170);
+  var deckImage = document.createElement('img');
+  deckImage.src = "CardImages/deck_bordered.png";
+  context.drawImage(deckImage,20,20,135,170);
   // Dealer
-  context.drawImage(cardImage,dealer[0],10,105,140);
-  context.drawImage(cardImage,dealer[1],10,105,140);
-  // Players
-  ShowPlayers();
-  context.drawImage(cardImage,play4[0],450,105,140);
-  context.drawImage(cardImage,play4[1],450,105,140);
-  context.drawImage(cardImage,play4[2],450,105,140);
-  context.drawImage(cardImage,play4[3],450,105,140);
-  context.drawImage(cardImage,play4[4],450,105,140);
-  context.drawImage(cardImage,play4[5],450,105,140);
-  context.drawImage(cardImage,play4[6],450,105,140);
-  context.drawImage(cardImage,play4[7],450,105,140);
+  context.rect(dealer[0] - 10, 10, 240, 160);
+  context.fillStyle = "014C12";
+  context.fill();
+
+  // Hide game & UI elements
+  game.hide();
+  $(".create").hide();
+  // Toggle create menu
+  $("#buttonCreate").click(function(){
+    $(".create").toggle();
+    ToggleCreateBorder();
+  });
 }
 
 function CreateNetwork()
@@ -46,13 +49,114 @@ function CreateNetwork()
   socket.on("update", function(data)
   {
     connections = data;
-    console.log("Data = " + data);
+    console.log("Data = " + connections);
+    ShowPlayers();
+    ShowCards();
   });
 }
 
+function ToggleCreateBorder()
+{
+  if ($(".create").style.height == 70)
+  {
+    $(".create").style.height == 190;
+  }
+  else
+  {
+    $(".create").style.height == 70;
+  }
+}
+
+function ToggleMenu()
+{
+  $(".lobby").toggle();
+}
+
+function ToggleCanvas()
+{
+  $(".game").toggle();
+}
+
+
+
+
 function ShowPlayers()
 {
+  // Get canvas to draw on
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  switch(connections)
+  {
+    case 1:
+      context.rect(play1[0] - 10, 430, 240, 160);
+      context.fillStyle = "014C12";
+      context.fill();
+    break;
+    case 2:
+      context.rect(play2[0] - 10, 430, 240, 160);
+      context.rect(play2[2] - 10, 430, 240, 160);
+      context.fillStyle = "014C12";
+      context.fill();
+    break;
+    case 3:
+      context.rect(play3[0] - 10, 430, 240, 160);
+      context.rect(play3[2] - 10, 430, 240, 160);
+      context.rect(play3[4] - 10, 430, 240, 160);
+      context.fillStyle = "014C12";
+      context.fill();
+    break;
+    case 4:
+      context.rect(play4[0] - 10, 430, 240, 160);
+      context.rect(play4[2] - 10, 430, 240, 160);
+      context.rect(play4[4] - 10, 430, 240, 160);
+      context.rect(play4[6] - 10, 430, 240, 160);
+      context.fillStyle = "014C12";
+      context.fill();
+    break;
+  }
+}
 
+function ShowCards()
+{
+  var cardImage = document.createElement('img');
+  cardImage.src = "CardImages/Deck/2_of_clubs.png";
+
+  // Get canvas to draw on
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+
+  // Players
+  switch(connections)
+  {
+    case 1:
+      context.drawImage(cardImage,play1[0],440,105,140);
+      context.drawImage(cardImage,play1[1],440,105,140);
+    break;
+    case 2:
+      context.drawImage(cardImage,play2[0],440,105,140);
+      context.drawImage(cardImage,play2[1],440,105,140);
+      context.drawImage(cardImage,play2[2],440,105,140);
+      context.drawImage(cardImage,play2[3],440,105,140);
+    break;
+    case 3:
+      context.drawImage(cardImage,play3[0],440,105,140);
+      context.drawImage(cardImage,play3[1],440,105,140);
+      context.drawImage(cardImage,play3[2],440,105,140);
+      context.drawImage(cardImage,play3[3],440,105,140);
+      context.drawImage(cardImage,play3[4],440,105,140);
+      context.drawImage(cardImage,play3[5],440,105,140);
+    break;
+    case 4:
+      context.drawImage(cardImage,play4[0],440,105,140);
+      context.drawImage(cardImage,play4[1],440,105,140);
+      context.drawImage(cardImage,play4[2],440,105,140);
+      context.drawImage(cardImage,play4[3],440,105,140);
+      context.drawImage(cardImage,play4[4],440,105,140);
+      context.drawImage(cardImage,play4[5],440,105,140);
+      context.drawImage(cardImage,play4[6],440,105,140);
+      context.drawImage(cardImage,play4[7],440,105,140);
+    break;
+  }
 }
 
 function GetImage(name)
