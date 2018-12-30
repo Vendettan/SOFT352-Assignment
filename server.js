@@ -1,4 +1,5 @@
 var WebSocketServer = require('websocket').server;
+var io = require('socket.io')(9000);
 var http = require("http");
 
 var connections = [];
@@ -9,37 +10,24 @@ var server = http.createServer(function(request, response)
   console.log(new Date() + " - Received request");
 });
 
-server.listen(9000, function()
+var socket = io.listen(server);
+
+// var connection = request.accept(null, request.origin);
+
+io.on('connection', function(socket)
 {
-  console.log(new Date() + " - listening on port 9000");
-  GetDeck();
+  console.log('io connected');
+  connections.push(socket);
+  ShowConnections();
+
+  socket.emit('connect');
+  socket.emit('deck', "informationnn")
 });
 
-var socket = new WebSocketServer({
-  httpServer : server
-});
-
-socket.on("request", function(request)
+io.on('disconnect', function(reason)
 {
-  counter = 1;
-  var connection = request.accept(null, request.origin);
-  for (var client in connections)
-  {
-    counter += 1;
-  }
-  connections.push(connection);
-
-  console.log("NEW CONNECTION");
-
-  // Send client the deck
-  connection.emit("send deck");
-
-  connection.on("close", function(reasonCode, description)
-  {
-    console.log(new Date() + " - Connection closed");
-    connections.pop();
-    ShowConnections();
-  });
+  console.log('Disconnect');
+  connections.pop();
   ShowConnections();
 });
 
