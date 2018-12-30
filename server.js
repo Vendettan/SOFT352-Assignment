@@ -1,44 +1,35 @@
-var WebSocketServer = require('websocket').server;
+// var WebSocketServer = require('websocket').server;
 var io = require('socket.io')(9000);
-var http = require("http");
+// var http = require("http");
 
 var connections = [];
 var deck = [];
 
-var server = http.createServer(function(request, response)
+// var server = http.createServer(function(request, response)
+// {
+//   console.log(new Date() + " - Received request");
+// });
+
+// io.listen(server);
+
+io.sockets.on('connection', function(socket)
 {
-  console.log(new Date() + " - Received request");
-});
-
-var socket = io.listen(server);
-
-// var connection = request.accept(null, request.origin);
-
-io.on('connection', function(socket)
-{
-  console.log('io connected');
   connections.push(socket);
   ShowConnections();
 
   socket.emit('connect');
-  socket.emit('deck', "informationnn")
-});
+  socket.emit('update', connections.length)
 
-io.on('disconnect', function(reason)
-{
-  console.log('Disconnect');
-  connections.pop();
-  ShowConnections();
-});
+  socket.on('disconnect', function()
+  {
+    connections.pop();
+    ShowConnections();
+  });
+})
 
 function ShowConnections()
 {
   console.log("Connections: " + connections.length);
-
-  // for (var i in connections)
-  // {
-  //   console.log("Client: " + connections[i]);
-  // }
 }
 
 function GetDeck()
