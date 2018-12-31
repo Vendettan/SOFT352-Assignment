@@ -88,10 +88,10 @@ button
 {
   background-color: white;
   color: black;
-  border: 4px #01781D solid;
+  border: 2px #01781D solid;
   border-radius: 8px;
   font-size: 20px;
-  padding: 10px 10px;
+  padding: 10px 0px;
   width: 100px;
   height: 50px;
 }

@@ -20,7 +20,7 @@ window.onload = function(evt)
   context.drawImage(deckImage,20,20,135,170);
   // Dealer
   context.rect(dealer[0] - 10, 10, 240, 160);
-  context.fillStyle = "014C12";
+  context.fillStyle = "#014C12";
   context.fill();
 
   // Hide game & UI elements
@@ -43,7 +43,7 @@ window.onload = function(evt)
 
 function CreateNetwork()
 {
-  socket = io("http://localhost:9000");
+  // socket = io();
   socket.on("connect", function()
   {
     console.log("Client connected to server");
@@ -61,7 +61,6 @@ function JoinIP()
 {
   var ip = $("#inputIP").val();
   socket = io('http://' + ip + ':' + "9000");
-  console.log(ip);
 }
 
 function PlayerSelect(players)
