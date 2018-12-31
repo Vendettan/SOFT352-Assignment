@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Blackjack Client</title>
-  <h1>Blackjack</h1>
+  <h1>Wisecrack Tic-Tac Heart-Attack Blackjack</h1>
   <link rel="stylesheet" href="blackjack.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
@@ -17,10 +17,15 @@
       </div>
       <div class="create">
         <h2>Players</h2>
-        <button id="buttonPlayer1">1 Player</button>
-        <button id="buttonPlayer2">2 Player</button>
-        <button id="buttonPlayer3">3 Player</button>
-        <button id="buttonPlayer4">4 Player</button>
+        <button id="buttonPlayer1" onclick="PlayerSelect(1)">1 Player</button>
+        <button id="buttonPlayer2" onclick="PlayerSelect(2)">2 Player</button>
+        <button id="buttonPlayer3" onclick="PlayerSelect(3)">3 Player</button>
+        <button id="buttonPlayer4" onclick="PlayerSelect(4)">4 Player</button>
+      </div>
+      <div class="join">
+        <h2>IP To Join</h2>
+        <input id="inputIP" type="text" placeholder="xxx.xxx.xxx.xxx">
+        <button id="buttonJoin" onclick="JoinIP()">Join</button>
       </div>
     </div>
     <div class="game">

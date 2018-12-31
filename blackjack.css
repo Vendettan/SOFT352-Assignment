@@ -24,7 +24,7 @@ h1
 
 .lobby
 {
-  height: 190px;
+  height: 70px;
   width: 450px;
   border: 2px solid;
   text-align: center;
@@ -39,10 +39,22 @@ h1
 
 .create
 {
-  height: 120px;
-  width: 450px;
-  text-align: center;
+  display: none;
   margin-top: 30px;
+  height: 120px;
+  text-align: center;
+  border: 2px solid;
+  padding: 10px;
+}
+
+.join
+{
+  display: none;
+  margin-top: 30px;
+  height: 120px;
+  text-align: center;
+  border: 2px solid;
+  padding: 10px;
 }
 
 .actions
@@ -57,6 +69,21 @@ h1
   display: block;
 }
 
+input[type=text]
+{
+  padding: 10px 10px;
+  box-sizing: border-box;
+  font-size: 15px;
+  float: left;
+  transition: 0.5s;
+   border: 3px solid #ffffff;
+  outline: none;
+}
+input[type=text]:focus
+{
+  border: 3px solid #01781D;
+}
+
 button
 {
   background-color: white;
@@ -68,7 +95,6 @@ button
   width: 100px;
   height: 50px;
 }
-
 button:hover
 {
   background-color: #01781D;
@@ -77,7 +103,6 @@ button:hover
   border-width: 2px;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
 button:active
 {
   background-color: #1C8A3F;

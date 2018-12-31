@@ -11,12 +11,6 @@ var play4 = [85,200,355,470,625,740,895,1010];
 
 window.onload = function(evt)
 {
-  CreateNetwork();
-  ShowPlayers();
-  ShowCards();
-
-  // Get game menu
-  var game = $(".game");
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
@@ -30,13 +24,21 @@ window.onload = function(evt)
   context.fill();
 
   // Hide game & UI elements
-  game.hide();
-  $(".create").hide();
-  // Toggle create menu
-  $("#buttonCreate").click(function(){
-    $(".create").toggle();
-    ToggleCreateBorder();
+  $(".game").hide();
+  $("#buttonCreate").click(function()
+  {
+    ToggleCreate(1);
+    ToggleJoin(0);
   });
+  $("#buttonJoin").click(function()
+  {
+    ToggleJoin(1);
+    ToggleCreate(0);
+  });
+
+  CreateNetwork();
+  ShowPlayers();
+  ShowCards();
 }
 
 function CreateNetwork()
@@ -55,37 +57,26 @@ function CreateNetwork()
   });
 }
 
-function ToggleCreateBorder()
+function JoinIP()
 {
-  if ($(".create").style.height == 70)
-  {
-    $(".create").style.height == 190;
-  }
-  else
-  {
-    $(".create").style.height == 70;
-  }
+  var ip = $("#inputIP").val();
+  socket = io('http://' + ip + ':' + "9000");
+  console.log(ip);
 }
 
-function ToggleMenu()
+function PlayerSelect(players)
 {
-  $(".lobby").toggle();
+  ShowPlayers(players);
+  ToggleMenu(0);
+  ToggleCanvas(1);
 }
 
-function ToggleCanvas()
-{
-  $(".game").toggle();
-}
-
-
-
-
-function ShowPlayers()
+function ShowPlayers(players)
 {
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-  switch(connections)
+  switch(players)
   {
     case 1:
       context.rect(play1[0] - 10, 430, 240, 160);
@@ -189,4 +180,53 @@ function Split()
 function Bet()
 {
 
+}
+
+// Toggle functions with boolean inputs for error validation
+function ToggleMenu(bool)
+{
+  if (bool == 1)
+  {
+    $(".lobby").show();
+  }
+  else
+  {
+    $(".lobby").hide();
+  }
+}
+
+function ToggleCanvas(bool)
+{
+  if (bool == 1)
+  {
+    $(".game").show();
+  }
+  else
+  {
+    $(".game").hide();
+  }
+}
+
+function ToggleCreate(bool)
+{
+  if (bool == 1)
+  {
+    $(".create").show();
+  }
+  else
+  {
+    $(".create").hide();
+  }
+}
+
+function ToggleJoin(bool)
+{
+  if (bool == 1)
+  {
+    $(".join").show();
+  }
+  else
+  {
+    $(".join").hide();
+  }
 }
