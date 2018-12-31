@@ -49,16 +49,6 @@ function GetDeck()
   }
 }
 
-class Player
-{
-  constructor(socket, id, name)
-  {
-    this.socket = socket;
-    this.name = name;
-    this.id = id;
-  }
-}
-
 class Card
 {
   constructor(name)
