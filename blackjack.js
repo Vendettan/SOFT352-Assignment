@@ -36,31 +36,36 @@ window.onload = function(evt)
     ToggleCreate(0);
   });
 
-  CreateNetwork();
+  // CreateNetwork();
   ShowPlayers();
   ShowCards();
 }
 
-function CreateNetwork()
-{
-  // socket = io();
-  socket.on("connect", function()
-  {
-    console.log("Client connected to server");
-  });
-  socket.on("update", function(data)
-  {
-    connections = data;
-    console.log("Data = " + connections);
-    ShowPlayers();
-    ShowCards();
-  });
-}
+// function CreateNetwork()
+// {
+//   // socket = io();
+//   socket.on("connect", function()
+//   {
+//     console.log("Client connected to server");
+//   });
+//   socket.on("update", function(data)
+//   {
+//     connections = data;
+//     console.log("Data = " + connections);
+//     ShowPlayers();
+//     ShowCards();
+//   });
+// }
 
 function JoinIP()
 {
   var ip = $("#inputIP").val();
   socket = io('http://' + ip + ':' + "9000");
+  socket.on("connect", function()
+  {
+    console.log("Client connected to server");
+  });
+  $("#inputIP").val("");
 }
 
 function PlayerSelect(players)
