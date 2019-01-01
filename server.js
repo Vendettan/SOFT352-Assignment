@@ -1,8 +1,9 @@
 // var WebSocketServer = require('websocket').server;
 var io = require('socket.io')(9000);
 // var http = require("http");
-
+var executed = false;
 var connections = [];
+var players = [];
 var deck = [];
 
 // var server = http.createServer(function(request, response)
@@ -15,11 +16,18 @@ var deck = [];
 io.sockets.on('connection', function(socket)
 {
   connections.push(socket);
-  GetDeck();
+  if (executed == false)
+  {
+    GetDeck();
+  }
   ShowConnections();
 
   socket.emit('connect');
-  socket.emit('update', connections.length);
+
+  socket.on('add player', function(newPlayer)
+  {
+    players.push(newPlayer);
+  });
 
   socket.on('disconnect', function()
   {
@@ -32,10 +40,16 @@ io.sockets.on('connection', function(socket)
 function ShowConnections()
 {
   console.log("Connections: " + connections.length);
+
+  // for (var i in connections)
+  // {
+  //   console.log("Connection " + i + " = " + connections[i].name);
+  // }
 }
 
 function GetDeck()
 {
+  executed = true;
   path = "CardImages/Deck"
   var fs = require("fs");
   files = fs.readdirSync(path);

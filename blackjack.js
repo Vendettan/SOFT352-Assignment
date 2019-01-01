@@ -1,6 +1,5 @@
 var socket;
 var deck = [];
-var connections;
 var players = [];
 
 // Define coordinates for future reference
@@ -41,10 +40,14 @@ window.onload = function(evt)
 function JoinIP()
 {
   var ip = $("#inputIP").val();
+  var name = $("#userName").val();
   socket = io('http://' + ip + ':' + "9000");
   socket.on("connect", function()
   {
     console.log("Client connected to server");
+    var id = "player" + players.length;
+    var newPlayer = new Player(socket, id, name, null, null);
+    // socket.emit('add player', newPlayer);
   });
   $("#inputIP").val("");
 }
@@ -177,6 +180,15 @@ class Player
     this.id = id;
     this.coords = coords;
     this.hand = [];
+    this.total = function()
+    {
+      var count = 0;
+      for (var i in hand)
+      {
+        count += hand[i].weight;
+      }
+      return count;
+    }
   }
 }
 

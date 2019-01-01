@@ -51,10 +51,15 @@ h1
 {
   display: none;
   margin-top: 30px;
-  height: 120px;
+  height: 190px;
   text-align: center;
   border: 2px solid;
   padding: 10px;
+}
+
+#buttonJoinIP
+{
+  margin-top: 20px;
 }
 
 .actions
@@ -76,7 +81,7 @@ input[type=text]
   font-size: 15px;
   float: left;
   transition: 0.5s;
-   border: 3px solid #ffffff;
+  border: 3px solid #ffffff;
   outline: none;
 }
 input[type=text]:focus
