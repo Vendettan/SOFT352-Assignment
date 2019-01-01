@@ -24,9 +24,9 @@ io.sockets.on('connection', function(socket)
 
   socket.emit('connect');
 
-  socket.on('add player', function(newPlayer)
+  socket.on('add player', function(msg)
   {
-    players.push(newPlayer);
+    // players.push(newPlayer);
   });
 
   socket.on('disconnect', function()
@@ -41,10 +41,10 @@ function ShowConnections()
 {
   console.log("Connections: " + connections.length);
 
-  // for (var i in connections)
-  // {
-  //   console.log("Connection " + i + " = " + connections[i].name);
-  // }
+  for (var i in connections)
+  {
+    console.log("Connection " + i + " = " + connections[i]);
+  }
 }
 
 function GetDeck()
@@ -95,5 +95,26 @@ class Card
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
     this.image = null; // Image found client-side
+  }
+}
+
+class Player
+{
+  constructor(socket, id, name, coords, hand)
+  {
+    this.socket = socket;
+    this.name = name;
+    this.id = id;
+    this.coords = coords;
+    this.hand = [];
+    this.total = function()
+    {
+      var count = 0;
+      for (var i in hand)
+      {
+        count += hand[i].weight;
+      }
+      return count;
+    }
   }
 }

@@ -39,17 +39,29 @@ window.onload = function(evt)
 
 function JoinIP()
 {
-  var ip = $("#inputIP").val();
-  var name = $("#userName").val();
-  socket = io('http://' + ip + ':' + "9000");
-  socket.on("connect", function()
+  if ($("#inputIP").val().trim() != "" && $("#userName").val().trim() != "")
   {
-    console.log("Client connected to server");
-    var id = "player" + players.length;
-    var newPlayer = new Player(socket, id, name, null, null);
-    // socket.emit('add player', newPlayer);
-  });
-  $("#inputIP").val("");
+    var ip = $("#inputIP").val();
+    var name = $("#userName").val();
+    socket = io('http://' + ip + ':' + "9000");
+    socket.on("connect", function()
+    {
+      console.log("Client connected to server");
+      var id = "player" + players.length;
+      // var newPlayer = new Player(socket, id, name, null, null);
+      // socket.emit('add player', newPlayer);
+    });
+    socket.on('connect_failed', function()
+    {
+      alert("Unable to connect to IP")
+    });
+    $("#inputIP").val("");
+    $("#userName").val("");
+  }
+  else
+  {
+    alert("Name and IP fields must be occupied");
+  }
 }
 
 function PlayerSelect(users)
@@ -76,7 +88,7 @@ function ShowPlayers(users)
       context.fillStyle = "014C12";
       context.fill();
       // Player creation
-      var player1 = new Player(0, "player1", "matt", play1, null);
+      // var player1 = new Player(0, "player1", "matt", play1, null);
       players.push(player1);
       ShowCard(players[0].coords);
     break;
@@ -87,8 +99,8 @@ function ShowPlayers(users)
       context.fillStyle = "014C12";
       context.fill();
       // Player creation
-      var player1 = new Player(0, "player1", "matt", [play2[2], play2[3]], null);
-      var player2 = new Player(0, "player2", "jim", [play2[0], play2[1]], null);
+      // var player1 = new Player(0, "player1", "matt", [play2[2], play2[3]], null);
+      // var player2 = new Player(0, "player2", "jim", [play2[0], play2[1]], null);
       players.push(player1, player2);
       ShowCard(players[0].coords);
     break;
@@ -100,9 +112,9 @@ function ShowPlayers(users)
       context.fillStyle = "014C12";
       context.fill();
       // Player creation
-      var player1 = new Player(0, "player1", "matt", [play3[4], play3[5]], null);
-      var player2 = new Player(0, "player2", "jim", [play3[2], play3[3]], null);
-      var player3 = new Player(0, "player3", "bob", [play3[0], play3[1]], null);
+      // var player1 = new Player(0, "player1", "matt", [play3[4], play3[5]], null);
+      // var player2 = new Player(0, "player2", "jim", [play3[2], play3[3]], null);
+      // var player3 = new Player(0, "player3", "bob", [play3[0], play3[1]], null);
       players.push(player1, player2, player3);
       ShowCard(players[0].coords);
     break;
@@ -115,10 +127,10 @@ function ShowPlayers(users)
       context.fillStyle = "014C12";
       context.fill();
       // Player creation
-      var player1 = new Player(0, "player1", "matt", [play4[6], play4[7]], null);
-      var player2 = new Player(0, "player2", "jim", [play4[4], play4[5]], null);
-      var player3 = new Player(0, "player3", "bob", [play4[2], play4[3]], null);
-      var player4 = new Player(0, "player4", "steve", [play4[0], play4[1]], null);
+      // var player1 = new Player(0, "player1", "matt", [play4[6], play4[7]], null);
+      // var player2 = new Player(0, "player2", "jim", [play4[4], play4[5]], null);
+      // var player3 = new Player(0, "player3", "bob", [play4[2], play4[3]], null);
+      // var player4 = new Player(0, "player4", "steve", [play4[0], play4[1]], null);
       players.push(player1, player2, player3, player4);
       ShowCard(players[0].coords);
     break;
@@ -169,27 +181,6 @@ function Split()
 function Bet()
 {
 
-}
-
-class Player
-{
-  constructor(socket, id, name, coords, hand)
-  {
-    this.socket = socket;
-    this.name = name;
-    this.id = id;
-    this.coords = coords;
-    this.hand = [];
-    this.total = function()
-    {
-      var count = 0;
-      for (var i in hand)
-      {
-        count += hand[i].weight;
-      }
-      return count;
-    }
-  }
 }
 
 // Toggle functions with boolean inputs for error validation
