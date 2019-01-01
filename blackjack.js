@@ -1,6 +1,4 @@
 var socket;
-var deck = [];
-var players = [];
 
 // Define coordinates for future reference
 var dealer = [490, 605];
@@ -39,22 +37,23 @@ window.onload = function(evt)
 
 function JoinIP()
 {
+  var serverOpen = true;
   if ($("#inputIP").val().trim() != "" && $("#userName").val().trim() != "")
   {
     var ip = $("#inputIP").val();
     var name = $("#userName").val();
     socket = io('http://' + ip + ':' + "9000");
+    // Error handling when IP is invalid/ server is offline
+    // socket.on('connect_error', function()
+    // {
+    //   alert("Unable to connect to IP")
+    // });
     socket.on("connect", function()
     {
       console.log("Client connected to server");
-      var id = "player" + players.length;
-      // var newPlayer = new Player(socket, id, name, null, null);
-      // socket.emit('add player', newPlayer);
+      socket.emit('add_player', name);
     });
-    socket.on('connect_failed', function()
-    {
-      alert("Unable to connect to IP")
-    });
+
     $("#inputIP").val("");
     $("#userName").val("");
   }

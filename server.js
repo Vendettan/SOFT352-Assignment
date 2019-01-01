@@ -3,7 +3,6 @@ var io = require('socket.io')(9000);
 // var http = require("http");
 var executed = false;
 var connections = [];
-var players = [];
 var deck = [];
 
 // var server = http.createServer(function(request, response)
@@ -16,17 +15,19 @@ var deck = [];
 io.sockets.on('connection', function(socket)
 {
   connections.push(socket);
+  // Get deck once
   if (executed == false)
   {
     GetDeck();
   }
-  ShowConnections();
 
   socket.emit('connect');
 
-  socket.on('add player', function(msg)
+  socket.on('add_player', function(userName)
   {
-    // players.push(newPlayer);
+    console.log('UserName = ' + userName);
+    socket.id = "player" + connections.length;
+    console.log("socket id = " + socket.id);
   });
 
   socket.on('disconnect', function()
@@ -35,6 +36,7 @@ io.sockets.on('connection', function(socket)
     ShowConnections();
     socket.emit('update', connections.length);
   });
+  ShowConnections();
 })
 
 function ShowConnections()
@@ -43,8 +45,14 @@ function ShowConnections()
 
   for (var i in connections)
   {
-    console.log("Connection " + i + " = " + connections[i]);
+    var keys = Object.keys(connections[i]);
+    for (var j in keys)
+    {
+      var keyName = keys[j];
+      // console.log("Connection " + i + ": key - '" + keyName + " = " + connections[i][keyName]);
+    }
   }
+
 }
 
 function GetDeck()
@@ -58,8 +66,8 @@ function GetDeck()
     var tempCard = new Card(files[i]);
     deck.push(tempCard);
   }
-  console.log(deck);
   Shuffle(deck);
+  console.log(deck);
 }
 
 function Shuffle(array)
