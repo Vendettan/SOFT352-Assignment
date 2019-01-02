@@ -41,6 +41,7 @@ function JoinIP()
   {
     var ip = $("#inputIP").val();
     var name = $("#userName").val();
+
     socket = io('http://' + ip + ':' + "9000");
     // Error handling when IP is invalid/ server is offline
     // socket.on('connect_error', function()
@@ -68,6 +69,8 @@ function CreateLobby()
   {
     var ip = $("#createInputIP").val();
     var name = $("#createUserName").val();
+    var playerCount = $("input[name='player']:checked").val();
+
     socket = io('http://' + ip + ':' + "9000");
     // Error handling when IP is invalid/ server is offline
     // socket.on('connect_error', function()
@@ -77,13 +80,13 @@ function CreateLobby()
     socket.on("connect", function()
     {
       console.log("Host Client connected to server");
-      socket.emit('add_player', name);
+      socket.emit('add_player', name, playerCount);
     });
 
     $("#createInputIP").val("");
     $("#createUserName").val("");
 
-    var playerCount = $("input[name='player']:checked").val();
+
     console.log(playerCount);
     PlayerSelect(playerCount);
   }
@@ -95,7 +98,6 @@ function CreateLobby()
 
 function PlayerSelect(users)
 {
-  players = [];
   ShowPlayers(users);
   ToggleMenu(0);
   ToggleCanvas(1);
@@ -106,12 +108,15 @@ function PlayerSelect(users)
 // test cards for the host player
 function ShowPlayers(users)
 {
+  console.log("show players");
+  console.log("users: " + users);
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
   switch(users)
   {
     case 1:
+    console.log("case 1");
       // Table area
       context.rect(play1[0] - 10, 430, 240, 160);
       context.fillStyle = "014C12";
@@ -119,9 +124,10 @@ function ShowPlayers(users)
       // Player creation
       // var player1 = new Player(0, "player1", "matt", play1, null);
       players.push(player1);
-      ShowCard(players[0].coords);
+      socket.emi('')
     break;
     case 2:
+    console.log("case 2");
       // Table areas
       context.rect(play2[0] - 10, 430, 240, 160);
       context.rect(play2[2] - 10, 430, 240, 160);
@@ -134,6 +140,7 @@ function ShowPlayers(users)
       ShowCard(players[0].coords);
     break;
     case 3:
+    console.log("case 3");
       // Table areas
       context.rect(play3[0] - 10, 430, 240, 160);
       context.rect(play3[2] - 10, 430, 240, 160);
@@ -145,9 +152,9 @@ function ShowPlayers(users)
       // var player2 = new Player(0, "player2", "jim", [play3[2], play3[3]], null);
       // var player3 = new Player(0, "player3", "bob", [play3[0], play3[1]], null);
       players.push(player1, player2, player3);
-      ShowCard(players[0].coords);
     break;
     case 4:
+    console.log("case 4");
       // Table areas
       context.rect(play4[0] - 10, 430, 240, 160);
       context.rect(play4[2] - 10, 430, 240, 160);
@@ -161,7 +168,6 @@ function ShowPlayers(users)
       // var player3 = new Player(0, "player3", "bob", [play4[2], play4[3]], null);
       // var player4 = new Player(0, "player4", "steve", [play4[0], play4[1]], null);
       players.push(player1, player2, player3, player4);
-      ShowCard(players[0].coords);
     break;
   }
 }

@@ -19,14 +19,14 @@ io.sockets.on('connection', function(socket)
   {
     GetDeck();
   }
-
   socket.emit('connect');
 
   var address = socket.request.connection._peername.address;
   console.log("New connection from address: " + address);
-  socket.on('add_player', function(userName)
+  socket.on('add_player', function(userName, playerCount)
   {
     console.log('UserName = ' + userName);
+    console.log('playerCount = ' + playerCount);
     socket.id = "player" + connections.length;
     console.log("Socket ID = " + socket.id);
     var newPlayer = new Player(socket, socket.id, userName, "", null);
@@ -36,8 +36,8 @@ io.sockets.on('connection', function(socket)
   socket.on('disconnect', function()
   {
     connections.pop();
-    ShowConnections();
     console.log("Connection: " + address + " has disconnected");
+    ShowConnections();
     socket.emit('update', connections.length);
   });
   ShowConnections();
