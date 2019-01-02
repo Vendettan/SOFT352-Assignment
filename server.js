@@ -18,30 +18,76 @@ io.sockets.on('connection', function(socket)
   {
     GetDeck();
   }
-  // socket.emit('connect');
+  socket.emit('purple');
 
   var address = socket.request.connection._peername.address;
   console.log("New connection from address: " + address);
-  socket.on('add_player', function(userName, playerCount)
+
+  socket.on('add_player', function(userName)
   {
     console.log('UserName = ' + userName);
-
     socket.id = "player" + connections.length;
 
-    // switch(playerCount)
-    // {
-    //   case 1:
-    //
-    //   break;
-    //   case 2:
-    //   break;
-    //   case 3:
-    //   break;
-    //   case 4:
-    //   break;
-    // }
+    // Set coords of players
+    // (Needs to know how many connections there are)
+    switch(playerCount)
+    {
+      case 1:
+      connections[0].coords = play1;
+      break;
+      case 2:
+      connections[0].coords = [play2[2], play2[3]];
+      connections[1].coords = [play2[0], play2[1]];
+      break;
+      case 3:
+      connections[0].coords = [play3[4], play3[5]];
+      connections[1].coords = [play3[2], play3[3]];
+      connections[2].coords = [play3[0], play3[1]];
+      break;
+      case 4:
+      connections[0].coords = [play4[6], play4[7]];
+      connections[1].coords = [play4[4], play4[5]];
+      connections[2].coords = [play4[2], play4[3]];
+      connections[3].coords = [play4[0], play4[1]];
+      break;
+    }
 
-    var newPlayer = new Player(socket, socket.id, userName, playerCoords);
+    var newPlayer = new Player(socket, socket.id, userName;
+
+    connections.push(newPlayer);
+  });
+
+  socket.on('add_host', function(userName, playerCount)
+  {
+    console.log('UserName = ' + userName);
+    console.log('PlayerCount = ' + userName);
+    socket.id = "player" + connections.length;
+
+    // Set coords of players
+    // (Needs to know how many connections there are)
+    switch(playerCount)
+    {
+      case 1:
+      connections[0].coords = play1;
+      break;
+      case 2:
+      connections[0].coords = [play2[2], play2[3]];
+      connections[1].coords = [play2[0], play2[1]];
+      break;
+      case 3:
+      connections[0].coords = [play3[4], play3[5]];
+      connections[1].coords = [play3[2], play3[3]];
+      connections[2].coords = [play3[0], play3[1]];
+      break;
+      case 4:
+      connections[0].coords = [play4[6], play4[7]];
+      connections[1].coords = [play4[4], play4[5]];
+      connections[2].coords = [play4[2], play4[3]];
+      connections[3].coords = [play4[0], play4[1]];
+      break;
+    }
+
+    var newPlayer = new Player(socket, socket.id, userName;
 
     connections.push(newPlayer);
   });
@@ -62,7 +108,7 @@ function ShowConnections()
 
   for (var i in connections)
   {
-    // Add id print
+    console.log("Connection_" + i + ": " + connections[i].id);
   }
 }
 
@@ -119,12 +165,12 @@ class Card
 
 class Player
 {
-  constructor(socket, id, name, coords)
+  constructor(socket, id, name)
   {
     this.socket = socket;
     this.name = name;
     this.id = id;
-    this.coords = coords;
+    this.coords = [];
     this.hand = [];
     this.total = function()
     {

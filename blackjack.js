@@ -47,6 +47,11 @@ function JoinIP()
       socket.emit('add_player', name);
     });
 
+    socket.on("purple", function()
+    {
+      console.log("yes its inbuilt");
+    });
+
     $("#inputIP").val("");
     $("#userName").val("");
   }
@@ -73,7 +78,7 @@ function CreateLobby()
     socket.on("connect", function()
     {
       console.log("Host Client connected to server");
-      socket.emit('add_player', name, playerCount);
+      socket.emit('add_host', name, playerCount);
     });
 
     $("#createInputIP").val("");
