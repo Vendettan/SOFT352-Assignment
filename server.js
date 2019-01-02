@@ -129,10 +129,18 @@ io.sockets.on('connection', function(socket)
 
   socket.on('disconnect', function()
   {
-    connections.pop();
+    // Remove connection that matches socket ID
+    for (var i in connections)
+    {
+      console.log("Socket " + i + " ID = " + socket.id);
+      console.log("Connection " + i + " ID = " + connections[i].id);
+      if (socket.id == connections[i].id)
+      {
+        connections.splice(i, 1);
+      }
+    }
     console.log("Connection: " + address + " has disconnected");
     ShowConnections();
-    socket.emit('update', connections.length);
   });
 })
 
