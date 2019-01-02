@@ -33,33 +33,52 @@ io.sockets.on('connection', function(socket)
         console.log('UserName = ' + userName);
         socket.id = "player" + connections.length;
 
-        // Set coords of players
-        // (Needs to know how many connections there are)
-        // switch(playerCount)
-        // {
-        //   case 1:
-        //   connections[0].coords = play1;
-        //   break;
-        //   case 2:
-        //   connections[0].coords = [play2[2], play2[3]];
-        //   connections[1].coords = [play2[0], play2[1]];
-        //   break;
-        //   case 3:
-        //   connections[0].coords = [play3[4], play3[5]];
-        //   connections[1].coords = [play3[2], play3[3]];
-        //   connections[2].coords = [play3[0], play3[1]];
-        //   break;
-        //   case 4:
-        //   connections[0].coords = [play4[6], play4[7]];
-        //   connections[1].coords = [play4[4], play4[5]];
-        //   connections[2].coords = [play4[2], play4[3]];
-        //   connections[3].coords = [play4[0], play4[1]];
-        //   break;
-        // }
-
         var newPlayer = new Player(socket, socket.id, userName);
-
         connections.push(newPlayer);
+
+        console.log("Connection 1 coords = " + connections[0].coords);
+
+        // Set coords of players
+        if (playerCnt == 2)
+        {
+          if (connections[1] != null)
+          {
+            connections[1].coords = [play2[0], play2[1]];
+            console.log("Connection 2 coords = " + connections[1].coords);
+          }
+        }
+        else if (playerCnt == 3)
+        {
+          if (connections[1] != null)
+          {
+            connections[1].coords = [play3[2], play3[3]];
+            console.log("Connection 2 coords = " + connections[1].coords);
+          }
+          if (connections[2] != null)
+          {
+            connections[2].coords = [play3[0], play3[1]];
+            console.log("Connection 3 coords = " + connections[2].coords);
+          }
+        }
+        else if (playerCnt == 4)
+        {
+          if (connections[1] != null)
+          {
+            connections[1].coords = [play4[4], play4[5]];
+            console.log("Connection 2 coords = " + connections[1].coords);
+          }
+          if (connections[2] != null)
+          {
+            connections[2].coords = [play4[2], play4[3]];
+            console.log("Connection 3 coords = " + connections[2].coords);
+          }
+          if (connections[3] != null)
+          {
+            connections[3].coords = [play4[0], play4[1]];
+            console.log("Connection 4 coords = " + connections[3].coords);
+          }
+        }
+
         socket.emit('show_players', playerCnt);
       }
       else
