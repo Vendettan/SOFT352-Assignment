@@ -19,7 +19,6 @@ io.sockets.on('connection', function(socket)
   {
     GetDeck();
   }
-  socket.emit('purple');
 
   var address = socket.request.connection._peername.address;
   console.log("New connection from address: " + address);
@@ -61,7 +60,7 @@ io.sockets.on('connection', function(socket)
     }
     else
     {
-      console.log("server note created yet");
+      socket.emit('no_server');
     }
 
     ShowConnections();

@@ -47,9 +47,9 @@ function JoinIP()
       socket.emit('add_player', name);
     });
 
-    socket.on("purple", function()
+    socket.on("no_server", function()
     {
-      console.log("yes its inbuilt");
+      alert("No server has been created yet");
     });
 
     $("#inputIP").val("");
