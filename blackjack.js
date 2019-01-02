@@ -1,5 +1,11 @@
 var socket;
+
+// Player coordinates used for creating table spaces
 var dealer = [490, 605];
+var play1 = [490, 605];
+var play2 = [280, 395, 700, 815];
+var play3 = [120, 235, 490, 605, 860, 975];
+var play4 = [85,200,355,470,625,740,895,1010];
 
 window.onload = function(evt)
 {
@@ -37,22 +43,16 @@ function JoinIP()
     var name = $("#userName").val();
 
     socket = io('http://' + ip + ':' + "9000");
-    // Error handling when IP is invalid/ server is offline
-    // socket.on('connect_error', function()
-    // {
-    //   alert("Unable to connect to IP")
-    // });
+
     socket.on("connect", function()
     {
       console.log("Client connected to server");
       socket.emit('add_player', name);
     });
-
     socket.on("no_server", function()
     {
-      alert("No server has been created yet");
+      alert("No server has been created on this IP");
     });
-
     socket.on("server_full", function()
     {
       alert("The server you're trying to join is full");
@@ -60,6 +60,11 @@ function JoinIP()
 
     $("#inputIP").val("");
     $("#userName").val("");
+
+    socket.on('show_players', function(playerCount)
+    {
+      PlayerSelect(playerCount);
+    });
   }
   else
   {
@@ -76,11 +81,7 @@ function CreateLobby()
     var playerCount = $("input[name='player']:checked").val();
 
     socket = io('http://' + ip + ':' + "9000");
-    // Error handling when IP is invalid/ server is offline
-    // socket.on('connect_error', function()
-    // {
-    //   alert("Unable to connect to IP")
-    // });
+
     socket.on("connect", function()
     {
       console.log("Host Client connected to server");
@@ -112,62 +113,36 @@ function ShowPlayers(users)
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-  switch(users)
+
+  if (users == 1)
   {
-    case 1:
-    console.log("case 1");
-      // Table area
-      context.rect(play1[0] - 10, 430, 240, 160);
-      context.fillStyle = "014C12";
-      context.fill();
-      // Player creation
-      // var player1 = new Player(0, "player1", "matt", play1, null);
-      players.push(player1);
-      socket.emit('')
-    break;
-    case 2:
-    console.log("case 2");
-      // Table areas
-      context.rect(play2[0] - 10, 430, 240, 160);
-      context.rect(play2[2] - 10, 430, 240, 160);
-      context.fillStyle = "014C12";
-      context.fill();
-      // Player creation
-      // var player1 = new Player(0, "player1", "matt", [play2[2], play2[3]], null);
-      // var player2 = new Player(0, "player2", "jim", [play2[0], play2[1]], null);
-      players.push(player1, player2);
-      ShowCard(players[0].coords);
-    break;
-    case 3:
-    console.log("case 3");
-      // Table areas
-      context.rect(play3[0] - 10, 430, 240, 160);
-      context.rect(play3[2] - 10, 430, 240, 160);
-      context.rect(play3[4] - 10, 430, 240, 160);
-      context.fillStyle = "014C12";
-      context.fill();
-      // Player creation
-      // var player1 = new Player(0, "player1", "matt", [play3[4], play3[5]], null);
-      // var player2 = new Player(0, "player2", "jim", [play3[2], play3[3]], null);
-      // var player3 = new Player(0, "player3", "bob", [play3[0], play3[1]], null);
-      players.push(player1, player2, player3);
-    break;
-    case 4:
-    console.log("case 4");
-      // Table areas
-      context.rect(play4[0] - 10, 430, 240, 160);
-      context.rect(play4[2] - 10, 430, 240, 160);
-      context.rect(play4[4] - 10, 430, 240, 160);
-      context.rect(play4[6] - 10, 430, 240, 160);
-      context.fillStyle = "014C12";
-      context.fill();
-      // Player creation
-      // var player1 = new Player(0, "player1", "matt", [play4[6], play4[7]], null);
-      // var player2 = new Player(0, "player2", "jim", [play4[4], play4[5]], null);
-      // var player3 = new Player(0, "player3", "bob", [play4[2], play4[3]], null);
-      // var player4 = new Player(0, "player4", "steve", [play4[0], play4[1]], null);
-      players.push(player1, player2, player3, player4);
-    break;
+    context.rect(play1[0] - 10, 430, 240, 160);
+    context.fillStyle = "014C12";
+    context.fill();
+  }
+  else if (users == 2)
+  {
+    context.rect(play2[0] - 10, 430, 240, 160);
+    context.rect(play2[2] - 10, 430, 240, 160);
+    context.fillStyle = "014C12";
+    context.fill();
+  }
+  else if (users == 3)
+  {
+    context.rect(play3[0] - 10, 430, 240, 160);
+    context.rect(play3[2] - 10, 430, 240, 160);
+    context.rect(play3[4] - 10, 430, 240, 160);
+    context.fillStyle = "014C12";
+    context.fill();
+  }
+  else if (users == 4)
+  {
+    context.rect(play4[0] - 10, 430, 240, 160);
+    context.rect(play4[2] - 10, 430, 240, 160);
+    context.rect(play4[4] - 10, 430, 240, 160);
+    context.rect(play4[6] - 10, 430, 240, 160);
+    context.fillStyle = "014C12";
+    context.fill();
   }
 }
 

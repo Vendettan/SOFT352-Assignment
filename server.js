@@ -21,8 +21,8 @@ io.sockets.on('connection', function(socket)
     GetDeck();
   }
 
-  var address = socket.request.connection._peername.address;
-  console.log("New connection from address: " + address);
+  var address = socket.request.connection._peername.address.replace("::ffff:", "");
+  console.log("NEW CONNECTION from address: " + address);
 
   socket.on('add_player', function(userName)
   {
@@ -60,6 +60,7 @@ io.sockets.on('connection', function(socket)
         var newPlayer = new Player(socket, socket.id, userName);
 
         connections.push(newPlayer);
+        socket.emit('show_players', playerCnt);
       }
       else
       {
@@ -101,11 +102,9 @@ io.sockets.on('connection', function(socket)
     }
 
     var newPlayer = new Player(socket, socket.id, userName, hostCoords);
-
     connections.push(newPlayer);
 
     serverCreated = true;
-
     ShowConnections();
   });
 
@@ -120,12 +119,14 @@ io.sockets.on('connection', function(socket)
 
 function ShowConnections()
 {
+  console.log("-----------");
   console.log("Connections: " + connections.length);
 
-  for (var i in connections)
+  for (var i = 0; i< connections.length; i++)
   {
     console.log(" Connection " + i + ": " + connections[i].id);
   }
+  console.log("-----------");
 }
 
 function GetDeck()
