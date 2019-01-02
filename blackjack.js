@@ -103,8 +103,6 @@ function PlayerSelect(users)
 // test cards for the host player
 function ShowPlayers(users)
 {
-  console.log("show players");
-  console.log("users: " + users);
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
