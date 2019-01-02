@@ -1,16 +1,15 @@
-// var WebSocketServer = require('websocket').server;
 var io = require('socket.io')(9000);
-// var http = require("http");
+
 var executed = false;
 var connections = [];
 var deck = [];
 
-// var server = http.createServer(function(request, response)
-// {
-//   console.log(new Date() + " - Received request");
-// });
-
-// io.listen(server);
+// Define coordinates for different gamemodes
+var dealer = [490, 605];
+var play1 = [490, 605];
+var play2 = [280, 395, 700, 815];
+var play3 = [120, 235, 490, 605, 860, 975];
+var play4 = [85,200,355,470,625,740,895,1010];
 
 io.sockets.on('connection', function(socket)
 {
@@ -19,17 +18,31 @@ io.sockets.on('connection', function(socket)
   {
     GetDeck();
   }
-  socket.emit('connect');
+  // socket.emit('connect');
 
   var address = socket.request.connection._peername.address;
   console.log("New connection from address: " + address);
   socket.on('add_player', function(userName, playerCount)
   {
     console.log('UserName = ' + userName);
-    console.log('playerCount = ' + playerCount);
+
     socket.id = "player" + connections.length;
-    console.log("Socket ID = " + socket.id);
-    var newPlayer = new Player(socket, socket.id, userName, "", null);
+
+    // switch(playerCount)
+    // {
+    //   case 1:
+    //
+    //   break;
+    //   case 2:
+    //   break;
+    //   case 3:
+    //   break;
+    //   case 4:
+    //   break;
+    // }
+
+    var newPlayer = new Player(socket, socket.id, userName, playerCoords);
+
     connections.push(newPlayer);
   });
 
@@ -106,7 +119,7 @@ class Card
 
 class Player
 {
-  constructor(socket, id, name, coords, hand)
+  constructor(socket, id, name, coords)
   {
     this.socket = socket;
     this.name = name;

@@ -1,12 +1,5 @@
 var socket;
-
-// Define coordinates for future reference
 var dealer = [490, 605];
-var play1 = [490, 605];
-var play2 = [280, 395, 700, 815];
-var play3 = [120, 235, 490, 605, 860, 975];
-var play4 = [85,200,355,470,625,740,895,1010];
-
 window.onload = function(evt)
 {
   // Get canvas to draw on
@@ -85,9 +78,6 @@ function CreateLobby()
 
     $("#createInputIP").val("");
     $("#createUserName").val("");
-
-
-    console.log(playerCount);
     PlayerSelect(playerCount);
   }
   else
@@ -124,7 +114,7 @@ function ShowPlayers(users)
       // Player creation
       // var player1 = new Player(0, "player1", "matt", play1, null);
       players.push(player1);
-      socket.emi('')
+      socket.emit('')
     break;
     case 2:
     console.log("case 2");
