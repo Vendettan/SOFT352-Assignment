@@ -16,20 +16,43 @@
         <button id="buttonJoin">Join Lobby</button>
       </div>
       <div class="create">
-        <h2>Players</h2>
-        <button id="buttonPlayer1" onclick="PlayerSelect(1)">1 Player</button>
-        <button id="buttonPlayer2" onclick="PlayerSelect(2)">2 Player</button>
-        <button id="buttonPlayer3" onclick="PlayerSelect(3)">3 Player</button>
-        <button id="buttonPlayer4" onclick="PlayerSelect(4)">4 Player</button>
+        <div class="createUserName">
+          <input id="createUserName" type="text" placeholder="Name">
+          <h2>Name</h2>
+        </div>
+          <div class="createInputIP">
+          <input id="createInputIP" type="text" placeholder="xxx.xxx.xxx.xxx">
+          <h2>IP To Join</h2>
+        </div>
+        <div class="players">
+          <h2>Players</h2>
+          <label id="container">1 Player<br/>
+            <input type="radio" name="player" id="radioPlayer1" value="1" checked="checked">
+            <span id="checkmark"></span>
+          </label>
+          <label id="container">2 Player<br/>
+            <input type="radio" name="player" id="radioPlayer1" value="2">
+            <span id="checkmark"></span>
+          </label>
+          <label id="container">3 Player<br/>
+            <input type="radio" name="player" id="radioPlayer1" value="3">
+            <span id="checkmark"></span>
+          </label>
+          <label id="container">4 Player<br/>
+            <input type="radio" name="player" id="radioPlayer1" value="4">
+            <span id="checkmark"></span>
+          </label>
+        </div>
+        <button id="buttonHost" onclick="CreateLobby()">Host</button>
       </div>
       <div class="join">
         <div class="userName">
-        <input id="userName" type="text" placeholder="Name">
-        <h2>Name</h2>
+          <input id="userName" type="text" placeholder="Name">
+          <h2>Name</h2>
         </div>
         <div class="inputIP">
-        <input id="inputIP" type="text" placeholder="xxx.xxx.xxx.xxx">
-        <h2>IP To Join</h2>
+          <input id="inputIP" type="text" placeholder="xxx.xxx.xxx.xxx">
+          <h2>IP To Join</h2>
         </div>
         <button id="buttonJoinIP" onclick="JoinIP()">Join</button>
       </div>

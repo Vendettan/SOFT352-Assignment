@@ -41,7 +41,7 @@ h1
 {
   display: none;
   margin-top: 30px;
-  height: 120px;
+  height: 270px;
   text-align: center;
   border: 2px solid;
   padding: 10px;
@@ -73,6 +73,70 @@ h1
   display: block;
 }
 
+.players
+{
+  text-align: center;
+  padding: 5px 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+label
+{
+  float: left;
+  padding: 0 1em;
+  margin-left: 6px
+}
+
+#container {
+  display: block;
+  position: relative;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+#container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+#checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 30%;
+  transition: 0.3s;
+}
+#container input:checked ~ #checkmark
+{
+  background-color: #01781D;
+}
+#checkmark:after
+{
+  content: "";
+  position: absolute;
+  display: none;
+}
+#container input:checked ~ #checkmark:after
+{
+  display: block;
+}
+#container #checkmark:after
+{
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+
 input[type=text]
 {
   padding: 10px 10px;
@@ -90,6 +154,7 @@ input[type=text]:focus
 
 button
 {
+  cursor: pointer;
   background-color: white;
   color: black;
   border: 2px #01781D solid;

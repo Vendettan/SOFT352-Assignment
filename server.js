@@ -14,7 +14,6 @@ var deck = [];
 
 io.sockets.on('connection', function(socket)
 {
-  connections.push(socket);
   // Get deck once
   if (executed == false)
   {
@@ -23,17 +22,22 @@ io.sockets.on('connection', function(socket)
 
   socket.emit('connect');
 
+  var address = socket.request.connection._peername.address;
+  console.log("New connection from address: " + address);
   socket.on('add_player', function(userName)
   {
     console.log('UserName = ' + userName);
     socket.id = "player" + connections.length;
-    console.log("socket id = " + socket.id);
+    console.log("Socket ID = " + socket.id);
+    var newPlayer = new Player(socket, socket.id, userName, "", null);
+    connections.push(newPlayer);
   });
 
   socket.on('disconnect', function()
   {
     connections.pop();
     ShowConnections();
+    console.log("Connection: " + address + " has disconnected");
     socket.emit('update', connections.length);
   });
   ShowConnections();
@@ -45,14 +49,8 @@ function ShowConnections()
 
   for (var i in connections)
   {
-    var keys = Object.keys(connections[i]);
-    for (var j in keys)
-    {
-      var keyName = keys[j];
-      // console.log("Connection " + i + ": key - '" + keyName + " = " + connections[i][keyName]);
-    }
+    // Add id print
   }
-
 }
 
 function GetDeck()

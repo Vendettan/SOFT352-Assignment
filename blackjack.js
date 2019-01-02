@@ -37,7 +37,6 @@ window.onload = function(evt)
 
 function JoinIP()
 {
-  var serverOpen = true;
   if ($("#inputIP").val().trim() != "" && $("#userName").val().trim() != "")
   {
     var ip = $("#inputIP").val();
@@ -56,6 +55,37 @@ function JoinIP()
 
     $("#inputIP").val("");
     $("#userName").val("");
+  }
+  else
+  {
+    alert("Name and IP fields must be occupied");
+  }
+}
+
+function CreateLobby()
+{
+  if ($("#createInputIP").val().trim() != "" && $("#createUserName").val().trim() != "")
+  {
+    var ip = $("#createInputIP").val();
+    var name = $("#createUserName").val();
+    socket = io('http://' + ip + ':' + "9000");
+    // Error handling when IP is invalid/ server is offline
+    // socket.on('connect_error', function()
+    // {
+    //   alert("Unable to connect to IP")
+    // });
+    socket.on("connect", function()
+    {
+      console.log("Host Client connected to server");
+      socket.emit('add_player', name);
+    });
+
+    $("#createInputIP").val("");
+    $("#createUserName").val("");
+
+    var playerCount = $("input[name='player']:checked").val();
+    console.log(playerCount);
+    PlayerSelect(playerCount);
   }
   else
   {
