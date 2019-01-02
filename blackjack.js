@@ -1,5 +1,6 @@
 var socket;
 var dealer = [490, 605];
+
 window.onload = function(evt)
 {
   // Get canvas to draw on
@@ -50,6 +51,11 @@ function JoinIP()
     socket.on("no_server", function()
     {
       alert("No server has been created yet");
+    });
+
+    socket.on("server_full", function()
+    {
+      alert("The server you're trying to join is full");
     });
 
     $("#inputIP").val("");
