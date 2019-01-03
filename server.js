@@ -164,24 +164,20 @@ io.sockets.on('connection', function(socket)
   // User actions
   socket.on('hit', function()
   {
-    // On action, perform, then resetTimeout and next turn
-    ResetTimeout();
-    NextTurn();
+    // On action, perform, and pass turn
+    PassTurn();
   });
   socket.on('stand', function()
   {
-    ResetTimeout();
-    NextTurn();
+    PassTurn();
   });
   socket.on('double', function()
   {
-    ResetTimeout();
-    NextTurn();
+    PassTurn();
   });
   socket.on('split', function()
   {
-    ResetTimeout();
-    NextTurn();
+    PassTurn();
   });
 
   socket.on('disconnect', function()
@@ -217,6 +213,10 @@ function PassTurn()
 function NextTurn()
 {
   turn = currentTurn++ % connections.length;
+  if (turn < 0)
+  {
+    turn = 0;
+  }
   console.log("turn: " + turn);
   connections[turn].socket.emit('your_turn');
   console.log('next turn triggered: ', turn);

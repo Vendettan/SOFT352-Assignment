@@ -66,6 +66,18 @@ function JoinIP()
       PlayerSelect(playerCount);
     });
     $("#buttonJoinIP").attr("disabled");
+
+    socket.on("your_turn", function()
+    {
+      console.log("Your Turn");
+      $(".actions :button").attr("disabled", false);
+    });
+
+    socket.on("turn_over", function()
+    {
+      console.log("Turn Over");
+      $(".actions :button").attr("disabled", true);
+    });
   }
   else
   {
@@ -89,6 +101,18 @@ function CreateLobby()
       socket.emit('add_host', name, playerCount);
     });
 
+    socket.on("your_turn", function()
+    {
+      console.log("Your Turn");
+      $(".actions :button").attr("disabled", false);
+    });
+
+    socket.on("turn_over", function()
+    {
+      console.log("Turn Over");
+      $(".actions :button").attr("disabled", true);
+    });
+
     $("#createInputIP").val("");
     $("#createUserName").val("");
     PlayerSelect(playerCount);
@@ -99,17 +123,7 @@ function CreateLobby()
   }
 }
 
-socket.on("your_turn", function()
-{
-  console.log("Your Turn");
-  $(".actions :button").attr("disabled", false);
-});
 
-socket.on("turn_over", function()
-{
-  console.log("Turn Over");
-  $(".actions :button").attr("disabled", true);
-});
 
 function PlayerSelect(users)
 {
@@ -194,7 +208,7 @@ function Stand()
   socket.emit('stand');
 }
 
-function DoubleDown()
+function Double()
 {
   socket.emit('double');
 }
