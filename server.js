@@ -4,6 +4,7 @@ var io = require('socket.io')(9000);
 var playerCnt;
 var serverCreated = false;
 var executed = false;
+var gameStarted = false;
 
 // Arrays for connections and deck management
 var connections = [];
@@ -13,7 +14,7 @@ var deck = [];
 var currentTurn = 0;
 var timeOut;
 var turn = 0;
-const MAX_WAIT = 60000;
+const MAX_WAIT = 5000;
 
 // Define coordinates for different gamemodes
 var dealer = [490, 605];
@@ -39,6 +40,7 @@ io.sockets.on('connection', function(socket)
     {
       if (connections.length < playerCnt)
       {
+        socket.emit('game_started');
         console.log('UserName = ' + userName);
         socket.id = "player" + connections.length;
 
@@ -175,7 +177,7 @@ io.sockets.on('connection', function(socket)
   // User actions
   socket.on('hit', function()
   {
-    // On action, perform, and pass turn
+
 
   });
   socket.on('stand', function()
@@ -193,6 +195,7 @@ io.sockets.on('connection', function(socket)
 
   socket.on('pass_turn', function()
   {
+    gameStarted = true;
     if (connections.length != 0)
     {
       if (connections[turn].socket.id == socket.id)
@@ -224,6 +227,12 @@ io.sockets.on('connection', function(socket)
     }
     console.log("Connection: " + address + " has disconnected");
     ShowConnections();
+
+    // If there are no connections, allow a new server to be created
+    if (connections.length == 0)
+    {
+      serverCreated = false;
+    }
   });
 })
 
@@ -233,7 +242,7 @@ function NextTurn()
   if (connections.length != 0)
   {
     // If all players have played
-    if (turn == (connections.length));
+    if (turn == (connections.length - 1))
     {
       DealersTurn();
     }
@@ -315,7 +324,7 @@ function Deal()
 
 function DealersTurn()
 {
-
+  console.log("dealers turn");
 }
 
 function GetCard()

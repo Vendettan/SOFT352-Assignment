@@ -33,6 +33,11 @@ window.onload = function(evt)
     ToggleJoin(1);
     ToggleCreate(0);
   });
+
+
+  // Initially disable action buttons
+  // $('#').prop('disabled', true);
+  $(".actions").find("button").attr("disabled", "disabled");
 }
 
 function JoinIP()
@@ -61,22 +66,30 @@ function JoinIP()
     $("#inputIP").val("");
     $("#userName").val("");
 
+    socket.on('game_started', function()
+    {
+      $("#start").hide();
+    });
+
     socket.on('show_players', function(playerCount)
     {
       PlayerSelect(playerCount);
     });
     $("#buttonJoinIP").attr("disabled");
 
+    // Turn functions
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
-      $(".actions :button").attr("disabled", false);
+      // $(".actions :button").attr("disabled", false);
+      $(".actions").find("button").removeAttr("disabled");
     });
 
     socket.on("turn_over", function()
     {
       console.log("Turn Over");
-      $(".actions :button").attr("disabled", true);
+      // $(".actions :button").attr("disabled", true);
+      $(".actions").find("button").attr("disabled", "disabled");
     });
   }
   else
@@ -110,15 +123,18 @@ function CreateLobby()
       PlayerSelect(playerCount);
     });
 
+    // Turn functions
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
-      $(".actions :button").attr("disabled", false);
+      // $(".actions :button").attr("disabled", false);
+      $(".actions").find("button").removeAttr("disabled");
     });
     socket.on("turn_over", function()
     {
       console.log("Turn Over");
-      $(".actions :button").attr("disabled", true);
+      // $(".actions :button").attr("disabled", true);
+      $(".actions").find("button").attr("disabled", "disabled");
     });
 
     $("#createInputIP").val("");
@@ -197,6 +213,12 @@ function GetImage(name)
   var img = document.createElement('img');
   img.src = "CardImages/Deck" + name;
   return img;
+}
+
+function StartGame()
+{
+  $("#start").hide();
+  socket.emit('pass_turn');
 }
 
 function Hit()
