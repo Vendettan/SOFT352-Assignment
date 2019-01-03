@@ -100,13 +100,16 @@ function CreateLobby()
       console.log("Host Client connected to server");
       socket.emit('add_host', name, playerCount);
     });
+    socket.on("server_created", function()
+    {
+      alert("A server has already been created on this IP");
+    });
 
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
       $(".actions :button").attr("disabled", false);
     });
-
     socket.on("turn_over", function()
     {
       console.log("Turn Over");

@@ -123,42 +123,49 @@ io.sockets.on('connection', function(socket)
 
   socket.on('add_host', function(userName, playerCount)
   {
-    console.log('UserName = ' + userName);
-    console.log('PlayerCount = ' + playerCount);
-    playerCnt = playerCount;
-    socket.id = "player" + connections.length;
-
-    var hostCoords;
-
-    if (playerCount == 1)
+    if (serverCreated == false)
     {
-      hostCoords = play1;
-    }
-    else if (playerCount == 2)
-    {
-      hostCoords = [play2[2], play2[3]];
-    }
-    else if (playerCount == 3)
-    {
-      hostCoords = [play3[4], play3[5]];
-    }
-    else if (playerCount == 4)
-    {
-      hostCoords = [play4[6], play4[7]];
-    }
+      console.log('UserName = ' + userName);
+      console.log('PlayerCount = ' + playerCount);
+      playerCnt = playerCount;
+      socket.id = "player" + connections.length;
 
-    var newPlayer = new Player(socket, "", userName, hostCoords);
-    connections.push(newPlayer);
+      var hostCoords;
 
-    for (var i = 0; i < connections.length; i++)
-    {
-      connections[i].id = "player" + i;
+      if (playerCount == 1)
+      {
+        hostCoords = play1;
+      }
+      else if (playerCount == 2)
+      {
+        hostCoords = [play2[2], play2[3]];
+      }
+      else if (playerCount == 3)
+      {
+        hostCoords = [play3[4], play3[5]];
+      }
+      else if (playerCount == 4)
+      {
+        hostCoords = [play4[6], play4[7]];
+      }
+
+      var newPlayer = new Player(socket, "", userName, hostCoords);
+      connections.push(newPlayer);
+
+      for (var i = 0; i < connections.length; i++)
+      {
+        connections[i].id = "player" + i;
+      }
+
+      serverCreated = true;
+      ShowConnections();
+
+      // var newCard = GetCard();
     }
-
-    serverCreated = true;
-    ShowConnections();
-
-    // var newCard = GetCard();
+    else
+    {
+      socket.emit('server_created');
+    }
   });
 
   // User actions
@@ -182,13 +189,18 @@ io.sockets.on('connection', function(socket)
 
   socket.on('pass_turn', function()
   {
-    if (connections[turn].socket.id == socket.id)
+    if (connections.length != 0)
     {
-      ResetTimeout();
-      NextTurn();
+      if (connections[turn].socket.id == socket.id)
+      {
+        ResetTimeout();
+        connections[turn].socket.emit('turn_over');
+        NextTurn();
+      }
     }
+
   });
-  
+
   socket.on('disconnect', function()
   {
     // Remove connection that matches socket ID
@@ -196,11 +208,15 @@ io.sockets.on('connection', function(socket)
     {
       console.log("Socket " + i + " ID = " + socket.id);
       console.log("Connection " + i + " ID = " + connections[i].id);
+      if (turn != 0)
+      {
+        turn--;
+      }
+
       if (socket.id == connections[i].id)
       {
         connections.splice(i, 1);
       }
-      turn--;
       console.log("turn: " + turn);
     }
     console.log("Connection: " + address + " has disconnected");
@@ -212,10 +228,6 @@ io.sockets.on('connection', function(socket)
 function NextTurn()
 {
   turn = currentTurn++ % connections.length;
-  if (turn < 0)
-  {
-    turn = 0;
-  }
   console.log("turn: " + turn);
   connections[turn].socket.emit('your_turn');
   console.log('next turn triggered: ', turn);
