@@ -171,7 +171,7 @@ function GetImage(name)
 function Hit()
 {
   socket.emit('hit');
-  socket.on('hit_return' function(card, position)
+  socket.on('hit_return', function(card, position)
   {
     ShowCard(card, position);
   });
