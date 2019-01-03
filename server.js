@@ -31,16 +31,24 @@ io.sockets.on('connection', function(socket)
       if (connections.length < playerCnt)
       {
         console.log('UserName = ' + userName);
-        socket.id = "player" + connections.length;
 
-        var newPlayer = new Player(socket, socket.id, userName);
+        var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
 
-        console.log("Connection 1 coords = " + connections[0].coords);
+        // Reset player IDs
+        for (var i = 0; i < connections.length; i++)
+        {
+          connections[i].id = "player" + i;
+        }
 
-        // Set coords of players
+        // Reset coords of players
         if (playerCnt == 2)
         {
+          if (connections[0] != null)
+          {
+            connections[0].coords = [play2[2], play2[3]];
+            console.log("Connection 1 coords = " + connections[0].coords);
+          }
           if (connections[1] != null)
           {
             connections[1].coords = [play2[0], play2[1]];
@@ -49,6 +57,11 @@ io.sockets.on('connection', function(socket)
         }
         else if (playerCnt == 3)
         {
+          if (connections[0] != null)
+          {
+            connections[0].coords = [play3[4], play3[5]];
+            console.log("Connection 1 coords = " + connections[0].coords);
+          }
           if (connections[1] != null)
           {
             connections[1].coords = [play3[2], play3[3]];
@@ -62,6 +75,11 @@ io.sockets.on('connection', function(socket)
         }
         else if (playerCnt == 4)
         {
+          if (connections[0] != null)
+          {
+            connections[0].coords = [play4[6], play4[7]];
+            console.log("Connection 1 coords = " + connections[0].coords);
+          }
           if (connections[1] != null)
           {
             connections[1].coords = [play4[4], play4[5]];
@@ -120,8 +138,13 @@ io.sockets.on('connection', function(socket)
       hostCoords = [play4[6], play4[7]];
     }
 
-    var newPlayer = new Player(socket, socket.id, userName, hostCoords);
+    var newPlayer = new Player(socket, "", userName, hostCoords);
     connections.push(newPlayer);
+
+    for (var i = 0; i < connections.length; i++)
+    {
+      connections[i].id = "player" + i;
+    }
 
     serverCreated = true;
     ShowConnections();
@@ -152,6 +175,7 @@ function ShowConnections()
   for (var i = 0; i< connections.length; i++)
   {
     console.log(" Connection " + i + ": " + connections[i].id);
+    console.log("   Connection " + i + " coords = " + connections[i].coords);
   }
   console.log("-----------");
 }
