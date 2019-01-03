@@ -165,21 +165,30 @@ io.sockets.on('connection', function(socket)
   socket.on('hit', function()
   {
     // On action, perform, and pass turn
-    PassTurn();
+
   });
   socket.on('stand', function()
   {
-    PassTurn();
+
   });
   socket.on('double', function()
   {
-    PassTurn();
+
   });
   socket.on('split', function()
   {
-    PassTurn();
+
   });
 
+  socket.on('pass_turn', function()
+  {
+    if (connections[turn].socket.id == socket.id)
+    {
+      ResetTimeout();
+      NextTurn();
+    }
+  });
+  
   socket.on('disconnect', function()
   {
     // Remove connection that matches socket ID
@@ -198,16 +207,6 @@ io.sockets.on('connection', function(socket)
     ShowConnections();
   });
 })
-
-function PassTurn()
-{
-  // If it is the turn of the socket performing the action
-  if (connections[turn].socket = socket)
-  {
-    ResetTimeout();
-    NextTurn();
-  }
-}
 
 // Initiate next turn
 function NextTurn()

@@ -201,21 +201,25 @@ function Hit()
   {
     ShowCard(card, position);
   });
+  socket.emit('pass_turn');
 }
 
 function Stand()
 {
   socket.emit('stand');
+  socket.emit('pass_turn');
 }
 
 function Double()
 {
   socket.emit('double');
+  socket.emit('pass_turn');
 }
 
 function Split()
 {
   socket.emit('split');
+  socket.emit('pass_turn');
 }
 
 function Bet()
