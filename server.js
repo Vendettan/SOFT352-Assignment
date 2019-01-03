@@ -40,7 +40,8 @@ io.sockets.on('connection', function(socket)
       if (connections.length < playerCnt)
       {
         console.log('UserName = ' + userName);
-
+        socket.id = "player" + connections.length;
+        
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
 
@@ -251,7 +252,6 @@ function ResetTimeout()
   console.log("reset timeout");
   clearTimeout(timeOut);
 }
-
 
 function ShowConnections()
 {
