@@ -148,10 +148,10 @@ function ShowPlayers(users)
 }
 
 // Show card at given position (TO BE ADDED: given card too)
-function ShowCard(position)
+function ShowCard(name, position)
 {
   var cardImage = document.createElement('img');
-  cardImage.src = "CardImages/Deck/2_of_clubs.png";
+  cardImage.src = "CardImages/Deck/" + name + ".png";
 
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
@@ -171,6 +171,10 @@ function GetImage(name)
 function Hit()
 {
   socket.emit('hit');
+  socket.on('hit_return' function(card, position)
+  {
+    ShowCard(card, position);
+  });
 }
 
 function Stand()

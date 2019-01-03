@@ -9,6 +9,12 @@ var executed = false;
 var connections = [];
 var deck = [];
 
+// Turn System
+var currentTurn = 0;
+var timeOut;
+var _turn = 0;
+const MAX_WAIT = 10000;
+
 // Define coordinates for different gamemodes
 var dealer = [490, 605];
 var play1 = [490, 605];
@@ -159,19 +165,19 @@ io.sockets.on('connection', function(socket)
   // User actions
   socket.on('hit', function()
   {
-
+    NextTurn();
   });
   socket.on('stand', function()
   {
-
+    NextTurn();
   });
   socket.on('double', function()
   {
-
+    NextTurn();
   });
   socket.on('split', function()
   {
-
+    NextTurn();
   });
 
   socket.on('disconnect', function()
@@ -190,6 +196,38 @@ io.sockets.on('connection', function(socket)
     ShowConnections();
   });
 })
+
+// function PassTurn()
+// {
+//   if (connections[turn])
+// }
+
+// Initiate next turn
+function NextTurn()
+{
+  turn = currentTurn++ % connections.length;
+  console.log("turn");
+  connections[turn].emit('your_turn');
+  console.log('next turn triggered: ', turn);
+  // StartTimeout();
+}
+
+// Start timeout that triggers next turn after wait time
+function StartTimeout()
+{
+  timeOut = setTimeout(function ()
+  {
+    NextTurn();
+  }, MAX_WAIT);
+}
+
+// Reset the timeout on
+function ResetTimeout()
+{
+  console.log("reset timeout");
+  clearTimeout(timeOut);
+}
+
 
 function ShowConnections()
 {
