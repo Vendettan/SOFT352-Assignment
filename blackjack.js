@@ -165,27 +165,27 @@ function GetImage(name)
 {
   var img = document.createElement('img');
   img.src = "CardImages/Deck" + name;
-  this.image = img;
+  return img;
 }
 
 function Hit()
 {
-
+  socket.emit('hit');
 }
 
 function Stand()
 {
-
+  socket.emit('stand');
 }
 
 function DoubleDown()
 {
-
+  socket.emit('double');
 }
 
 function Split()
 {
-
+  socket.emit('split');
 }
 
 function Bet()

@@ -1,8 +1,11 @@
 var io = require('socket.io')(9000);
 
+// Variables for validation and player management
 var playerCnt;
 var serverCreated = false;
 var executed = false;
+
+// Arrays for connections and deck management
 var connections = [];
 var deck = [];
 
@@ -148,6 +151,27 @@ io.sockets.on('connection', function(socket)
 
     serverCreated = true;
     ShowConnections();
+
+    var newCard = GetCard();
+    console.log("newCard = " + newCard);
+  });
+
+  // User actions
+  socket.on('hit', function()
+  {
+
+  });
+  socket.on('stand', function()
+  {
+
+  });
+  socket.on('double', function()
+  {
+
+  });
+  socket.on('split', function()
+  {
+
   });
 
   socket.on('disconnect', function()
@@ -175,7 +199,6 @@ function ShowConnections()
   for (var i = 0; i< connections.length; i++)
   {
     console.log(" Connection " + i + ": " + connections[i].id);
-    console.log("   Connection " + i + " coords = " + connections[i].coords);
   }
   console.log("-----------");
 }
@@ -209,6 +232,17 @@ function Shuffle(array)
     // Replace random index value with temporary variable
     array[j] = x;
   }
+}
+
+function Deal()
+{
+
+}
+
+function GetCard()
+{
+  var card = deck.pop();
+
 }
 
 class Card
