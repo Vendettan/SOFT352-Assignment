@@ -130,8 +130,6 @@ function CreateLobby()
   }
 }
 
-
-
 function PlayerSelect(users)
 {
   ShowPlayers(users);
@@ -213,7 +211,6 @@ function Hit()
 
 function Stand()
 {
-  socket.emit('stand');
   socket.emit('pass_turn');
 }
 

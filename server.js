@@ -13,7 +13,7 @@ var deck = [];
 var currentTurn = 0;
 var timeOut;
 var turn = 0;
-const MAX_WAIT = 5000;
+const MAX_WAIT = 60000;
 
 // Define coordinates for different gamemodes
 var dealer = [490, 605];
@@ -231,22 +231,36 @@ io.sockets.on('connection', function(socket)
 // Initiate next turn
 function NextTurn()
 {
-  turn = currentTurn++ % connections.length;
-  console.log("turn: " + turn);
-  connections[turn].socket.emit('your_turn');
-  console.log('next turn triggered: ', turn);
-  StartTimeout();
+  if (connections.length != 0)
+  {
+    // If all players have played
+    if (turn == connections.length);
+    {
+      DealersTurn();
+    }
+    else
+    {
+      turn = currentTurn++ % connections.length;
+      console.log("turn: " + turn);
+      connections[turn].socket.emit('your_turn');
+      console.log('next turn triggered: ', turn);
+      StartTimeout();
+    }
+  }
 }
 
 // Start timeout that triggers next turn after wait time
 function StartTimeout()
 {
-  console.log("start timeout");
-  timeOut = setTimeout(function ()
+  if (connections.length != 0)
   {
-    connections[turn].socket.emit('turn_over');
-    NextTurn();
-  }, MAX_WAIT);
+    console.log("start timeout");
+    timeOut = setTimeout(function ()
+    {
+      connections[turn].socket.emit('turn_over');
+      NextTurn();
+    }, MAX_WAIT);
+  }
 }
 
 // Reset the timeout on
@@ -300,6 +314,11 @@ function Shuffle(array)
 }
 
 function Deal()
+{
+
+}
+
+function DealersTurn()
 {
 
 }
