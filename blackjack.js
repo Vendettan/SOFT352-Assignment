@@ -105,6 +105,11 @@ function CreateLobby()
       alert("A server has already been created on this IP");
     });
 
+    socket.on("show_host", function()
+    {
+      PlayerSelect(playerCount);
+    });
+
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
@@ -118,7 +123,6 @@ function CreateLobby()
 
     $("#createInputIP").val("");
     $("#createUserName").val("");
-    PlayerSelect(playerCount);
   }
   else
   {

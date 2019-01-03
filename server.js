@@ -41,7 +41,7 @@ io.sockets.on('connection', function(socket)
       {
         console.log('UserName = ' + userName);
         socket.id = "player" + connections.length;
-        
+
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
 
@@ -124,6 +124,7 @@ io.sockets.on('connection', function(socket)
 
   socket.on('add_host', function(userName, playerCount)
   {
+    console.log("tries to add a host");
     if (serverCreated == false)
     {
       console.log('UserName = ' + userName);
@@ -160,6 +161,8 @@ io.sockets.on('connection', function(socket)
 
       serverCreated = true;
       ShowConnections();
+
+      socket.emit('show_host', playerCnt);
 
       // var newCard = GetCard();
     }
