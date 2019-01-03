@@ -8,7 +8,9 @@ var gameStarted = false;
 
 // Arrays for connections and deck management
 var connections = [];
+var players = [];
 var deck = [];
+var dealer;
 
 // Turn System
 var currentTurn = 0;
@@ -17,7 +19,7 @@ var turn = 0;
 const MAX_WAIT = 5000;
 
 // Define coordinates for different gamemodes
-var dealer = [490, 605];
+var dealerCoords = [490, 605];
 var play1 = [490, 605];
 var play2 = [280, 395, 700, 815];
 var play3 = [120, 235, 490, 605, 860, 975];
@@ -30,6 +32,10 @@ io.sockets.on('connection', function(socket)
   {
     GetDeck();
   }
+
+  console.log("io Connections length = " + connections.length);
+  console.log("io Players length = " + players.length);
+  dealer = new Dealer();
 
   var address = socket.request.connection._peername.address.replace("::ffff:", "");
   console.log("NEW CONNECTION from address: " + address);
@@ -46,6 +52,9 @@ io.sockets.on('connection', function(socket)
 
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
+
+        console.log("add Connections length = " + connections.length);
+        console.log("add Players length = " + players.length);
 
         // Reset player IDs
         for (var i = 0; i < connections.length; i++)
@@ -178,7 +187,6 @@ io.sockets.on('connection', function(socket)
   socket.on('hit', function()
   {
 
-
   });
   socket.on('stand', function()
   {
@@ -193,19 +201,31 @@ io.sockets.on('connection', function(socket)
 
   });
 
+  // At the start of the round
+  socket.on('new_round', function()
+  {
+    console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
+    players = [];
+    // Get all playing players
+    players = connections;
+
+    Deal();
+  });
+
   socket.on('pass_turn', function()
   {
     gameStarted = true;
-    if (connections.length != 0)
+    // If players isn't null
+    if (players.length != 0)
     {
-      if (connections[turn].socket.id == socket.id)
+      // If it's the players turn
+      if (players[turn].socket.id == socket.id)
       {
         ResetTimeout();
-        connections[turn].socket.emit('turn_over');
+        players[turn].socket.emit('turn_over');
         NextTurn();
       }
     }
-
   });
 
   socket.on('disconnect', function()
@@ -213,19 +233,26 @@ io.sockets.on('connection', function(socket)
     // Remove connection that matches socket ID
     for (var i in connections)
     {
-      // console.log("Socket " + i + " ID = " + socket.id);
-      // console.log("Connection " + i + " ID = " + connections[i].id);
-      if (turn != 0)
-      {
-        turn--;
-      }
-
+      // Remove connection
       if (socket.id == connections[i].id)
       {
         connections.splice(i, 1);
       }
     }
-    console.log("Connection: " + address + " has disconnected");
+    for (var i in players)
+    {
+      if (turn != 0)
+      {
+        turn--;
+      }
+
+      // Remove player
+      if (socket.id == players[i].id)
+      {
+        players.splice(i, 1);
+      }
+    }
+    console.log("Connection: " + socket.id + " (" + address + ") has disconnected");
     ShowConnections();
 
     // If there are no connections, allow a new server to be created
@@ -239,20 +266,22 @@ io.sockets.on('connection', function(socket)
 // Initiate next turn
 function NextTurn()
 {
-  if (connections.length != 0)
+  console.log("Connections length = " + connections.length);
+  console.log("Players length = " + players.length);
+  if (players.length != 0)
   {
     // If all players have played
-    if (turn == (connections.length - 1))
-    {
-      DealersTurn();
-    }
-    else
-    {
-      turn = currentTurn++ % connections.length;
-      connections[turn].socket.emit('your_turn');
+    // if (turn == (players.length - 1))
+    // {
+    //   DealersTurn();
+    // }
+    // else
+    // {
+      turn = currentTurn++ % players.length;
+      players[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
-    }
+    // }
   }
 }
 
@@ -262,7 +291,7 @@ function StartTimeout()
   console.log("start timeout");
   timeOut = setTimeout(function ()
   {
-    connections[turn].socket.emit('turn_over');
+    players[turn].socket.emit('turn_over');
     NextTurn();
   }, MAX_WAIT);
 }
@@ -319,12 +348,25 @@ function Shuffle(array)
 
 function Deal()
 {
-
+  // Get two cards
+  for (var x = 0; x < 2; x++)
+  {
+    // For the dealer
+    dealer.hand.push(GetCard());
+    // And for every playing connected player
+    for (var i in players)
+    {
+      var card = GetCard();
+      players[i].hand.push(GetCard());
+      console.log("Player[" + i + "] hand = " + players[i].hand.name);
+    }
+  }
 }
 
 function DealersTurn()
 {
   console.log("dealers turn");
+  // End of dealers turn,
 }
 
 function GetCard()
@@ -340,9 +382,13 @@ class Card
     this.name = name.split(".")[0];;
     var split = name.split("_");
     this.value = split[0].toLowerCase();
-    if (split[0] == "jack" || split[0] == "queen" || split[0] == "king" || split[0] == "ace")
+    if (split[0] == "jack" || split[0] == "queen" || split[0] == "king")
     {
       this.weight = 10;
+    }
+    else if (split[0] == "ace")
+    {
+      this.weight = 11;
     }
     else
     {

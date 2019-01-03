@@ -218,6 +218,7 @@ function GetImage(name)
 function StartGame()
 {
   $("#start").hide();
+  socket.emit('new_round');
   socket.emit('pass_turn');
 }
 
@@ -228,7 +229,6 @@ function Hit()
   {
     ShowCard(card, position);
   });
-  socket.emit('pass_turn');
 }
 
 function Stand()
@@ -239,13 +239,11 @@ function Stand()
 function Double()
 {
   socket.emit('double');
-  socket.emit('pass_turn');
 }
 
 function Split()
 {
   socket.emit('split');
-  socket.emit('pass_turn');
 }
 
 function Bet()
