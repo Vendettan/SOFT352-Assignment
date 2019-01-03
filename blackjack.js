@@ -101,12 +101,14 @@ function CreateLobby()
 
 socket.on("your_turn", function()
 {
-    $(".actions :button").attr("disabled", false);
+  console.log("Your Turn");
+  $(".actions :button").attr("disabled", false);
 });
 
 socket.on("turn_over", function()
 {
-    $(".actions :button").attr("disabled", true);
+  console.log("Turn Over");
+  $(".actions :button").attr("disabled", true);
 });
 
 function PlayerSelect(users)

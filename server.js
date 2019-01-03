@@ -12,7 +12,7 @@ var deck = [];
 // Turn System
 var currentTurn = 0;
 var timeOut;
-var _turn = 0;
+var turn = 0;
 const MAX_WAIT = 5000;
 
 // Define coordinates for different gamemodes
@@ -229,7 +229,7 @@ function StartTimeout()
   console.log("start timeout");
   timeOut = setTimeout(function ()
   {
-    socket.emit('turn_over');
+    connections[turn].socket.emit('turn_over');
     NextTurn();
   }, MAX_WAIT);
 }
