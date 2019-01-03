@@ -249,6 +249,7 @@ class Card
 {
   constructor(name)
   {
+    this.name = name;
     var split = name.split("_");
     this.value = split[0].toLowerCase();
     if (split[0] == "jack" || split[0] == "queen" || split[0] == "king" || split[0] == "ace")
