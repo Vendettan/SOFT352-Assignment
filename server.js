@@ -210,8 +210,8 @@ io.sockets.on('connection', function(socket)
     // Remove connection that matches socket ID
     for (var i in connections)
     {
-      console.log("Socket " + i + " ID = " + socket.id);
-      console.log("Connection " + i + " ID = " + connections[i].id);
+      // console.log("Socket " + i + " ID = " + socket.id);
+      // console.log("Connection " + i + " ID = " + connections[i].id);
       if (turn != 0)
       {
         turn--;
@@ -221,7 +221,6 @@ io.sockets.on('connection', function(socket)
       {
         connections.splice(i, 1);
       }
-      console.log("turn: " + turn);
     }
     console.log("Connection: " + address + " has disconnected");
     ShowConnections();
@@ -234,14 +233,13 @@ function NextTurn()
   if (connections.length != 0)
   {
     // If all players have played
-    if (turn == connections.length);
+    if (turn == (connections.length));
     {
       DealersTurn();
     }
     else
     {
       turn = currentTurn++ % connections.length;
-      console.log("turn: " + turn);
       connections[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
@@ -252,15 +250,12 @@ function NextTurn()
 // Start timeout that triggers next turn after wait time
 function StartTimeout()
 {
-  if (connections.length != 0)
+  console.log("start timeout");
+  timeOut = setTimeout(function ()
   {
-    console.log("start timeout");
-    timeOut = setTimeout(function ()
-    {
-      connections[turn].socket.emit('turn_over');
-      NextTurn();
-    }, MAX_WAIT);
-  }
+    connections[turn].socket.emit('turn_over');
+    NextTurn();
+  }, MAX_WAIT);
 }
 
 // Reset the timeout on
