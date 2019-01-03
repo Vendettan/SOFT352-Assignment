@@ -65,6 +65,7 @@ function JoinIP()
     {
       PlayerSelect(playerCount);
     });
+    $("#buttonJoinIP").attr("disabled");
   }
   else
   {
