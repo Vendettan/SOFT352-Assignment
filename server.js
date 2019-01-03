@@ -158,8 +158,7 @@ io.sockets.on('connection', function(socket)
     serverCreated = true;
     ShowConnections();
 
-    var newCard = GetCard();
-    console.log("newCard = " + newCard);
+    // var newCard = GetCard();
   });
 
   // User actions
@@ -206,15 +205,16 @@ io.sockets.on('connection', function(socket)
 function NextTurn()
 {
   turn = currentTurn++ % connections.length;
-  console.log("turn");
-  connections[turn].emit('your_turn');
+  console.log("turn: " + turn);
+  connections[turn].socket.emit('your_turn');
   console.log('next turn triggered: ', turn);
-  // StartTimeout();
+  StartTimeout();
 }
 
 // Start timeout that triggers next turn after wait time
 function StartTimeout()
 {
+  console.log("start timeout");
   timeOut = setTimeout(function ()
   {
     NextTurn();
@@ -231,14 +231,14 @@ function ResetTimeout()
 
 function ShowConnections()
 {
-  console.log("-----------");
+  console.log("vvvvvvvvvvv");
   console.log("Connections: " + connections.length);
 
   for (var i = 0; i< connections.length; i++)
   {
     console.log(" Connection " + i + ": " + connections[i].id);
   }
-  console.log("-----------");
+  console.log("^^^^^^^^^^^");
 }
 
 function GetDeck()
@@ -253,7 +253,7 @@ function GetDeck()
     deck.push(tempCard);
   }
   Shuffle(deck);
-  console.log(deck);
+  console.log("=== DECK SHUFFLED ===\n") ;
 }
 
 function Shuffle(array)
@@ -280,14 +280,14 @@ function Deal()
 function GetCard()
 {
   var card = deck.pop();
-
+  return card;
 }
 
 class Card
 {
   constructor(name)
   {
-    this.name = name;
+    this.name = name.split(".")[0];;
     var split = name.split("_");
     this.value = split[0].toLowerCase();
     if (split[0] == "jack" || split[0] == "queen" || split[0] == "king" || split[0] == "ace")
@@ -301,6 +301,15 @@ class Card
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
     this.image = null; // Image found client-side
+  }
+}
+
+class Dealer
+{
+  constructor()
+  {
+    this.hand = [];
+    this.coords = [490, 605];
   }
 }
 
