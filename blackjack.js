@@ -44,7 +44,7 @@ function JoinIP()
 {
   if ($("#inputIP").val().trim() != "" && $("#userName").val().trim() != "")
   {
-    var ip = $("#inputIP").val();
+    var ip = $("#inputIP").val().trim();
     var name = $("#userName").val();
 
     socket = io('http://' + ip + ':' + "9000");
@@ -108,11 +108,17 @@ function CreateLobby()
 
     socket = io('http://' + ip + ':' + "9000");
 
+    socket.on("connect_error", function()
+    {
+      alert("No server is running on this IP");
+      socket.disconnect();
+    });
     socket.on("connect", function()
     {
       console.log("Host Client connected to server");
       socket.emit('add_host', name, playerCount);
     });
+
     socket.on("server_created", function()
     {
       alert("A server has already been created on this IP");

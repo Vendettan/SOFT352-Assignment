@@ -47,8 +47,10 @@ io.sockets.on('connection', function(socket)
       if (connections.length < playerCnt)
       {
         socket.emit('game_started');
-        console.log('UserName = ' + userName);
         socket.id = "player" + connections.length;
+
+        console.log("before add Connections length = " + connections.length);
+        console.log("before add Players length = " + players.length);
 
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
@@ -68,12 +70,10 @@ io.sockets.on('connection', function(socket)
           if (connections[0] != null)
           {
             connections[0].coords = [play2[2], play2[3]];
-            console.log("Connection 1 coords = " + connections[0].coords);
           }
           if (connections[1] != null)
           {
             connections[1].coords = [play2[0], play2[1]];
-            console.log("Connection 2 coords = " + connections[1].coords);
           }
         }
         else if (playerCnt == 3)
@@ -81,17 +81,14 @@ io.sockets.on('connection', function(socket)
           if (connections[0] != null)
           {
             connections[0].coords = [play3[4], play3[5]];
-            console.log("Connection 1 coords = " + connections[0].coords);
           }
           if (connections[1] != null)
           {
             connections[1].coords = [play3[2], play3[3]];
-            console.log("Connection 2 coords = " + connections[1].coords);
           }
           if (connections[2] != null)
           {
             connections[2].coords = [play3[0], play3[1]];
-            console.log("Connection 3 coords = " + connections[2].coords);
           }
         }
         else if (playerCnt == 4)
@@ -99,22 +96,18 @@ io.sockets.on('connection', function(socket)
           if (connections[0] != null)
           {
             connections[0].coords = [play4[6], play4[7]];
-            console.log("Connection 1 coords = " + connections[0].coords);
           }
           if (connections[1] != null)
           {
             connections[1].coords = [play4[4], play4[5]];
-            console.log("Connection 2 coords = " + connections[1].coords);
           }
           if (connections[2] != null)
           {
             connections[2].coords = [play4[2], play4[3]];
-            console.log("Connection 3 coords = " + connections[2].coords);
           }
           if (connections[3] != null)
           {
             connections[3].coords = [play4[0], play4[1]];
-            console.log("Connection 4 coords = " + connections[3].coords);
           }
         }
 
@@ -135,10 +128,8 @@ io.sockets.on('connection', function(socket)
 
   socket.on('add_host', function(userName, playerCount)
   {
-    console.log("tries to add a host");
     if (serverCreated == false)
     {
-      console.log('UserName = ' + userName);
       console.log('PlayerCount = ' + playerCount);
       playerCnt = playerCount;
       socket.id = "player" + connections.length;
@@ -207,7 +198,7 @@ io.sockets.on('connection', function(socket)
     console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
     players = [];
     // Get all playing players
-    players = connections;
+    players = connections.slice();
 
     Deal();
   });
@@ -261,7 +252,7 @@ io.sockets.on('connection', function(socket)
       serverCreated = false;
     }
   });
-})
+});
 
 // Initiate next turn
 function NextTurn()
@@ -271,17 +262,17 @@ function NextTurn()
   if (players.length != 0)
   {
     // If all players have played
-    // if (turn == (players.length - 1))
-    // {
-    //   DealersTurn();
-    // }
-    // else
-    // {
+    if (turn == (players.length - 1))
+    {
+      DealersTurn();
+    }
+    else
+    {
       turn = currentTurn++ % players.length;
       players[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
-    // }
+    }
   }
 }
 
@@ -289,9 +280,13 @@ function NextTurn()
 function StartTimeout()
 {
   console.log("start timeout");
-  timeOut = setTimeout(function ()
+  timeOut = setTimeout(function()
   {
-    players[turn].socket.emit('turn_over');
+    // Don't emit if there are no connections
+    if (players.length != 0)
+    {
+      players[turn].socket.emit('turn_over');
+    }
     NextTurn();
   }, MAX_WAIT);
 }
