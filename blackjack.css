@@ -31,7 +31,7 @@ h1
   padding-top: 20px;
   position: absolute;
   top:0;
-  bottom: 0;
+  bottom: 200px;
   left: 0;
   right: 0;
   margin: auto;
@@ -70,7 +70,7 @@ h1
   padding: 10px 20px;
   margin-left: auto;
   margin-right: auto;
-  display: block;
+  display: inline-block;
 }
 
 .players
@@ -141,7 +141,6 @@ label
   background: white;
 }
 
-
 input[type=text]
 {
   padding: 10px 10px;
@@ -191,4 +190,9 @@ button:disabled, button:disabled:hover
 #buttonDouble, #buttonCreate, #buttonJoin
 {
   width: 150px;
+}
+
+#buttonStart
+{
+
 }

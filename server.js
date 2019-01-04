@@ -16,14 +16,15 @@ var dealer;
 var currentTurn = 0;
 var timeOut;
 var turn = 0;
-const MAX_WAIT = 5000;
+const MAX_WAIT = 10000;
 
+  // Coords should automatically updte client-side
 // Define coordinates for different gamemodes
-var dealerCoords = [490, 605];
-var play1 = [490, 605];
-var play2 = [280, 395, 700, 815];
-var play3 = [120, 235, 490, 605, 860, 975];
-var play4 = [85,200,355,470,625,740,895,1010];
+// var dealerCoords = [490, 605];
+// var play1 = [490, 605];
+// var play2 = [280, 395, 700, 815];
+// var play3 = [120, 235, 490, 605, 860, 975];
+// var play4 = [85,200,355,470,625,740,895,1010];
 
 io.sockets.on('connection', function(socket)
 {
@@ -36,7 +37,7 @@ io.sockets.on('connection', function(socket)
   dealer = new Dealer();
 
   var address = socket.request.connection._peername.address.replace("::ffff:", "");
-  console.log("NEW CONNECTION from address: " + address);
+  // console.log("NEW CONNECTION from address: " + address);
 
   socket.on('add_player', function(userName)
   {
@@ -191,7 +192,7 @@ io.sockets.on('connection', function(socket)
     players = [];
     // Get all playing players
     players = connections.slice();
-
+    connections = 0;
     Deal();
   });
 
@@ -224,18 +225,26 @@ io.sockets.on('connection', function(socket)
     }
     for (var i in players)
     {
-      if (turn != 0)
-      {
-        turn--;
-      }
-
       // Remove player
       if (socket.id == players[i].id)
       {
+        // If it is the turn of the payer disconnecting, pass turn
+        if (currentTurn++ % players.length == i)
+        {
+          socket.emit('pass_disconnect');
+        }
         players.splice(i, 1);
       }
+
+      // Subtract from turn if current turn isn't the first player
+      console.log("currentTurn = " + currentTurn);
+      if (currentTurn++ % players.length != 0)
+      {
+        currentTurn--;
+      }
     }
-    console.log("Connection: " + socket.id + " (" + address + ") has disconnected");
+    // console.log("Connection: " + socket.id + " (" + address + ") has disconnected");
+    console.log("Connection: " + socket.id + " has disconnected");
     ShowConnections();
 
     // If there are no connections, allow a new server to be created
@@ -252,17 +261,18 @@ function NextTurn()
   if (players.length != 0)
   {
     // If all players have played
-    if (turn == (players.length - 1))
-    {
-      DealersTurn();
-    }
-    else
-    {
+    // if (turn == (players.length - 1))
+    // {
+    //   DealersTurn();
+    // }
+    // else
+    // {
+      console.log("currentTurn = " + currentTurn);
       turn = currentTurn++ % players.length;
       players[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
-    }
+    // }
   }
 }
 
@@ -275,6 +285,7 @@ function StartTimeout()
     // Don't emit if there are no connections
     if (players.length != 0)
     {
+      console.log("TuRn = " + turn);
       players[turn].socket.emit('turn_over');
     }
     NextTurn();
@@ -290,14 +301,14 @@ function ResetTimeout()
 
 function ShowConnections()
 {
-  console.log("vvvvvvvvvvv");
-  console.log("Connections: " + connections.length);
-
-  for (var i = 0; i< connections.length; i++)
-  {
-    console.log(" Connection " + i + ": " + connections[i].id);
-  }
-  console.log("^^^^^^^^^^^");
+  // console.log("vvvvvvvvvvv");
+  // console.log("Connections: " + connections.length);
+  //
+  // for (var i = 0; i< connections.length; i++)
+  // {
+  //   console.log(" Connection " + i + ": " + connections[i].id);
+  // }
+  // console.log("^^^^^^^^^^^");
 }
 
 function GetDeck()
@@ -351,7 +362,7 @@ function Deal()
   // Add the dealer's hand
   var dealerHand = new Hand("dealer", dealer.hand);
   playerHands.push(dealerHand);
-  
+
   // Add the player hands
   for (var i in players)
   {

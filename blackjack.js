@@ -68,7 +68,7 @@ function JoinIP()
 
     socket.on('game_started', function()
     {
-      $("#start").hide();
+      $("#buttonStart").hide();
     });
 
     socket.on('show_players', function(playerCount)
@@ -79,13 +79,12 @@ function JoinIP()
 
     socket.on('deal', function(playerHands)
     {
-      console.log("deal");
       for (var i in playerHands)
       {
-        console.log("playerHands[" + i + "].id = " + playerHands[i].id);
+        // console.log("playerHands[" + i + "].id = " + playerHands[i].id);
         for (var x in playerHands[i].hand)
         {
-          console.log("playerHands[" + i + "] hand = " + playerHands[i].hand[x].name);
+          // console.log("playerHands[" + i + "] hand = " + playerHands[i].hand[x].name);
           playerHands[i].hand[x].image = GetImage(playerHands[i].hand[x].name);
         }
       }
@@ -113,6 +112,12 @@ function JoinIP()
       // $(".actions :button").attr("disabled", true);
       $(".actions").find("button").attr("disabled", "disabled");
     });
+
+    socket.on('pass_disconnect', function()
+    {
+      console.log("pass disconnect");
+      socket.emit('pass_turn');
+    })
   }
   else
   {
@@ -185,6 +190,12 @@ function CreateLobby()
       // $(".actions :button").attr("disabled", true);
       $(".actions").find("button").attr("disabled", "disabled");
     });
+
+    socket.on('pass_disconnect', function()
+    {
+      console.log("pass disconnect");
+      socket.emit('pass_turn');
+    })
 
     $("#createInputIP").val("");
     $("#createUserName").val("");
@@ -366,9 +377,9 @@ function GetImage(name)
 
 function StartGame()
 {
-  $("#start").hide();
+  $("#buttonStart").hide();
   socket.emit('new_round');
-  // socket.emit('pass_turn');
+  socket.emit('pass_turn');
 }
 
 function Hit()
