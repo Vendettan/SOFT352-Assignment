@@ -33,8 +33,6 @@ io.sockets.on('connection', function(socket)
     GetDeck();
   }
 
-  console.log("io Connections length = " + connections.length);
-  console.log("io Players length = " + players.length);
   dealer = new Dealer();
 
   var address = socket.request.connection._peername.address.replace("::ffff:", "");
@@ -48,9 +46,6 @@ io.sockets.on('connection', function(socket)
       {
         socket.emit('game_started');
         socket.id = "player" + connections.length;
-
-        console.log("before add Connections length = " + connections.length);
-        console.log("before add Players length = " + players.length);
 
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
@@ -165,8 +160,6 @@ io.sockets.on('connection', function(socket)
       ShowConnections();
 
       socket.emit('show_host', playerCnt);
-
-      // var newCard = GetCard();
     }
     else
     {
@@ -181,7 +174,7 @@ io.sockets.on('connection', function(socket)
   });
   socket.on('stand', function()
   {
-
+    // Passes turn
   });
   socket.on('double', function()
   {
@@ -257,8 +250,6 @@ io.sockets.on('connection', function(socket)
 // Initiate next turn
 function NextTurn()
 {
-  console.log("Connections length = " + connections.length);
-  console.log("Players length = " + players.length);
   if (players.length != 0)
   {
     // If all players have played
@@ -353,9 +344,30 @@ function Deal()
     {
       var card = GetCard();
       players[i].hand.push(GetCard());
-      console.log("Player[" + i + "] hand = " + players[i].hand.name);
     }
   }
+
+  for (var y in dealer.hand)
+  {
+    console.log("Dealer Hand = " + dealer.hand[y].name);
+  }
+
+  for (var i in players)
+  {
+    for (var x in players[i].hand)
+    {
+      console.log("Player[" + i + "] hand = " + players[i].hand[x].name);
+    }
+  }
+
+  var playerHands = []
+
+  for (var i in players)
+  {
+    var newHand = new Hand(players[i].id, players[i].hand);
+    playerHands.push(newHand);
+  }
+  io.sockets.emit('deal', playerHands);
 }
 
 function DealersTurn()
@@ -392,6 +404,15 @@ class Card
     var suitSplit = split[2].split(".");
     this.suit = suitSplit[0].toLowerCase();
     this.image = null; // Image found client-side
+  }
+}
+
+class Hand
+{
+  constructor(id, hand)
+  {
+    this.id = id;
+    this.hand = hand;
   }
 }
 

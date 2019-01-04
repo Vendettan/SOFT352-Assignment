@@ -1,11 +1,12 @@
 var socket;
+var playerCnt;
 
 // Player coordinates used for creating table spaces
-var dealer = [490, 605];
-var play1 = [490, 605];
-var play2 = [280, 395, 700, 815];
-var play3 = [120, 235, 490, 605, 860, 975];
-var play4 = [85,200,355,470,625,740,895,1010];
+var dealer = [490];
+var play1 = [490];
+var play2 = [280, 700];
+var play3 = [120, 490, 860];
+var play4 = [85, 355, 625, 895];
 
 window.onload = function(evt)
 {
@@ -77,6 +78,13 @@ function JoinIP()
     });
     $("#buttonJoinIP").attr("disabled");
 
+    socket.on('deal', function(players)
+    {
+      console.log('players = ' + players);
+
+
+    });
+
     // Turn functions
     socket.on("your_turn", function()
     {
@@ -104,7 +112,7 @@ function CreateLobby()
   {
     var ip = $("#createInputIP").val();
     var name = $("#createUserName").val();
-    var playerCount = $("input[name='player']:checked").val();
+    playerCnt = $("input[name='player']:checked").val();
 
     socket = io('http://' + ip + ':' + "9000");
 
@@ -116,7 +124,7 @@ function CreateLobby()
     socket.on("connect", function()
     {
       console.log("Host Client connected to server");
-      socket.emit('add_host', name, playerCount);
+      socket.emit('add_host', name, playerCnt);
     });
 
     socket.on("server_created", function()
@@ -126,7 +134,31 @@ function CreateLobby()
 
     socket.on("show_host", function()
     {
-      PlayerSelect(playerCount);
+      PlayerSelect(playerCnt);
+    });
+
+    socket.on('deal', function(playerHands)
+    {
+      console.log('players = ' + playerHands);
+
+      for (var i in playerHands)
+      {
+        console.log("playerHands[" + i + "].id = " + playerHands[0].id);
+        for (var x in playerHands[i].hand)
+        {
+          console.log("playerHands[" + i + "] hand = " + playerHands[i].hand[x].name);
+          playerHands[i].hand[x].image = GetImage(playerHands[i].hand[x].name);
+        }
+      }
+      // Wait for images to load before printing
+      setTimeout(function()
+      {
+        for (var i in playerHands)
+        {
+          ShowHand(playerHands[i].hand, playerHands[i].id);
+        }
+      }, 200);
+
     });
 
     // Turn functions
@@ -177,47 +209,78 @@ function ShowPlayers(users)
   else if (users == 2)
   {
     context.rect(play2[0] - 10, 430, 240, 160);
-    context.rect(play2[2] - 10, 430, 240, 160);
+    context.rect(play2[1] - 10, 430, 240, 160);
     context.fillStyle = "014C12";
     context.fill();
   }
   else if (users == 3)
   {
     context.rect(play3[0] - 10, 430, 240, 160);
+    context.rect(play3[1] - 10, 430, 240, 160);
     context.rect(play3[2] - 10, 430, 240, 160);
-    context.rect(play3[4] - 10, 430, 240, 160);
     context.fillStyle = "014C12";
     context.fill();
   }
   else if (users == 4)
   {
     context.rect(play4[0] - 10, 430, 240, 160);
+    context.rect(play4[1] - 10, 430, 240, 160);
     context.rect(play4[2] - 10, 430, 240, 160);
-    context.rect(play4[4] - 10, 430, 240, 160);
-    context.rect(play4[6] - 10, 430, 240, 160);
+    context.rect(play4[3] - 10, 430, 240, 160);
     context.fillStyle = "014C12";
     context.fill();
   }
 }
 
-// Show card at given position (TO BE ADDED: given card too)
-function ShowCard(name, position)
+// Show card at given position
+function ShowHand(hand, playerID)
 {
-  var cardImage = document.createElement('img');
-  cardImage.src = "CardImages/Deck/" + name + ".png";
+  console.log("playerID = " + playerID);
 
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
 
-  context.drawImage(cardImage,position[0],440,105,140);
-  context.drawImage(cardImage,position[1],440,105,140);
+  if (playerCnt == 1)
+  {
+    var tempPlay1 = play1.slice();
+    for (var i in hand)
+    {
+      console.log("hand[i].image = " + hand[i].image);
+      context.drawImage(hand[i].image,tempPlay1[0],450,85,120);
+      tempPlay1[0] += 20;
+    }
+  }
+  // else if (users == 2)
+  // {
+  //   context.rect(play2[0] - 10, 430, 240, 160);
+  //   context.rect(play2[2] - 10, 430, 240, 160);
+  //   context.fillStyle = "014C12";
+  //   context.fill();
+  // }
+  // else if (users == 3)
+  // {
+  //   context.rect(play3[0] - 10, 430, 240, 160);
+  //   context.rect(play3[2] - 10, 430, 240, 160);
+  //   context.rect(play3[4] - 10, 430, 240, 160);
+  //   context.fillStyle = "014C12";
+  //   context.fill();
+  // }
+  // else if (users == 4)
+  // {
+  //   context.rect(play4[0] - 10, 430, 240, 160);
+  //   context.rect(play4[2] - 10, 430, 240, 160);
+  //   context.rect(play4[4] - 10, 430, 240, 160);
+  //   context.rect(play4[6] - 10, 430, 240, 160);
+  //   context.fillStyle = "014C12";
+  //   context.fill();
+  // }
 }
 
 function GetImage(name)
 {
   var img = document.createElement('img');
-  img.src = "CardImages/Deck" + name;
+  img.src = "CardImages/Deck/" + name + ".png";
   return img;
 }
 
@@ -225,7 +288,7 @@ function StartGame()
 {
   $("#start").hide();
   socket.emit('new_round');
-  socket.emit('pass_turn');
+  // socket.emit('pass_turn');
 }
 
 function Hit()
@@ -233,7 +296,7 @@ function Hit()
   socket.emit('hit');
   socket.on('hit_return', function(card, position)
   {
-    ShowCard(card, position);
+
   });
 }
 
