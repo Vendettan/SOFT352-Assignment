@@ -348,6 +348,11 @@ function Deal()
 
   var playerHands = []
 
+  // Add the dealer's hand
+  var dealerHand = new Hand("dealer", dealer.hand);
+  playerHands.push(dealerHand);
+  
+  // Add the player hands
   for (var i in players)
   {
     var newHand = new Hand(players[i].id, players[i].hand);

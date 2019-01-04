@@ -250,6 +250,18 @@ function ShowHand(hand, playerID)
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
 
+  // Print dealer hand
+  if (playerID == "dealer")
+  {
+    var tempDealer = dealer.slice();
+    for (var i in hand)
+    {
+      context.drawImage(hand[i].image,tempDealer[0],30,85,120);
+      tempDealer[0] += 20;
+    }
+  }
+
+  // Print player hands
   if (playerCnt == 1)
   {
     var tempPlay1 = play1.slice();
@@ -261,8 +273,6 @@ function ShowHand(hand, playerID)
   }
   else if (playerCnt == 2)
   {
-    console.log(canvas);
-
     var tempPlay2 = play2.slice();
     if (playerID == "player0")
     {
