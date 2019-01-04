@@ -370,6 +370,11 @@ function Deal()
   io.sockets.emit('deal', playerHands);
 }
 
+function UpdateHands()
+{
+  
+}
+
 function DealersTurn()
 {
   console.log("dealers turn");
