@@ -50,61 +50,59 @@ io.sockets.on('connection', function(socket)
         var newPlayer = new Player(socket, "", userName);
         connections.push(newPlayer);
 
-        console.log("add Connections length = " + connections.length);
-        console.log("add Players length = " + players.length);
-
         // Reset player IDs
         for (var i = 0; i < connections.length; i++)
         {
           connections[i].id = "player" + i;
         }
 
+        // Coords should automatically updte client-side
         // Reset coords of players
-        if (playerCnt == 2)
-        {
-          if (connections[0] != null)
-          {
-            connections[0].coords = [play2[2], play2[3]];
-          }
-          if (connections[1] != null)
-          {
-            connections[1].coords = [play2[0], play2[1]];
-          }
-        }
-        else if (playerCnt == 3)
-        {
-          if (connections[0] != null)
-          {
-            connections[0].coords = [play3[4], play3[5]];
-          }
-          if (connections[1] != null)
-          {
-            connections[1].coords = [play3[2], play3[3]];
-          }
-          if (connections[2] != null)
-          {
-            connections[2].coords = [play3[0], play3[1]];
-          }
-        }
-        else if (playerCnt == 4)
-        {
-          if (connections[0] != null)
-          {
-            connections[0].coords = [play4[6], play4[7]];
-          }
-          if (connections[1] != null)
-          {
-            connections[1].coords = [play4[4], play4[5]];
-          }
-          if (connections[2] != null)
-          {
-            connections[2].coords = [play4[2], play4[3]];
-          }
-          if (connections[3] != null)
-          {
-            connections[3].coords = [play4[0], play4[1]];
-          }
-        }
+        // if (playerCnt == 2)
+        // {
+        //   if (connections[0] != null)
+        //   {
+        //     connections[0].coords = [play2[2], play2[3]];
+        //   }
+        //   if (connections[1] != null)
+        //   {
+        //     connections[1].coords = [play2[0], play2[1]];
+        //   }
+        // }
+        // else if (playerCnt == 3)
+        // {
+        //   if (connections[0] != null)
+        //   {
+        //     connections[0].coords = [play3[4], play3[5]];
+        //   }
+        //   if (connections[1] != null)
+        //   {
+        //     connections[1].coords = [play3[2], play3[3]];
+        //   }
+        //   if (connections[2] != null)
+        //   {
+        //     connections[2].coords = [play3[0], play3[1]];
+        //   }
+        // }
+        // else if (playerCnt == 4)
+        // {
+        //   if (connections[0] != null)
+        //   {
+        //     connections[0].coords = [play4[6], play4[7]];
+        //   }
+        //   if (connections[1] != null)
+        //   {
+        //     connections[1].coords = [play4[4], play4[5]];
+        //   }
+        //   if (connections[2] != null)
+        //   {
+        //     connections[2].coords = [play4[2], play4[3]];
+        //   }
+        //   if (connections[3] != null)
+        //   {
+        //     connections[3].coords = [play4[0], play4[1]];
+        //   }
+        // }
 
         socket.emit('show_players', playerCnt);
       }
@@ -129,26 +127,27 @@ io.sockets.on('connection', function(socket)
       playerCnt = playerCount;
       socket.id = "player" + connections.length;
 
-      var hostCoords;
+      // Coords should automatically updte client-side
+      // var hostCoords;
+      //
+      // if (playerCount == 1)
+      // {
+      //   hostCoords = play1;
+      // }
+      // else if (playerCount == 2)
+      // {
+      //   hostCoords = [play2[2], play2[3]];
+      // }
+      // else if (playerCount == 3)
+      // {
+      //   hostCoords = [play3[4], play3[5]];
+      // }
+      // else if (playerCount == 4)
+      // {
+      //   hostCoords = [play4[6], play4[7]];
+      // }
 
-      if (playerCount == 1)
-      {
-        hostCoords = play1;
-      }
-      else if (playerCount == 2)
-      {
-        hostCoords = [play2[2], play2[3]];
-      }
-      else if (playerCount == 3)
-      {
-        hostCoords = [play3[4], play3[5]];
-      }
-      else if (playerCount == 4)
-      {
-        hostCoords = [play4[6], play4[7]];
-      }
-
-      var newPlayer = new Player(socket, "", userName, hostCoords);
+      var newPlayer = new Player(socket, "", userName);
       connections.push(newPlayer);
 
       for (var i = 0; i < connections.length; i++)
@@ -347,19 +346,6 @@ function Deal()
     }
   }
 
-  for (var y in dealer.hand)
-  {
-    console.log("Dealer Hand = " + dealer.hand[y].name);
-  }
-
-  for (var i in players)
-  {
-    for (var x in players[i].hand)
-    {
-      console.log("Player[" + i + "] hand = " + players[i].hand[x].name);
-    }
-  }
-
   var playerHands = []
 
   for (var i in players)
@@ -372,7 +358,7 @@ function Deal()
 
 function UpdateHands()
 {
-  
+
 }
 
 function DealersTurn()
@@ -437,7 +423,6 @@ class Player
     this.socket = socket;
     this.name = name;
     this.id = id;
-    this.coords = coords;
     this.hand = [];
     this.total = function()
     {
