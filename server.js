@@ -192,7 +192,6 @@ io.sockets.on('connection', function(socket)
     players = [];
     // Get all playing players
     players = connections.slice();
-    connections = 0;
     Deal();
   });
 
@@ -237,7 +236,6 @@ io.sockets.on('connection', function(socket)
       }
 
       // Subtract from turn if current turn isn't the first player
-      console.log("currentTurn = " + currentTurn);
       if (currentTurn++ % players.length != 0)
       {
         currentTurn--;
@@ -261,18 +259,17 @@ function NextTurn()
   if (players.length != 0)
   {
     // If all players have played
-    // if (turn == (players.length - 1))
-    // {
-    //   DealersTurn();
-    // }
-    // else
-    // {
-      console.log("currentTurn = " + currentTurn);
+    if (turn == (players.length - 1))
+    {
+      DealersTurn();
+    }
+    else
+    {
       turn = currentTurn++ % players.length;
       players[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
-    // }
+    }
   }
 }
 
@@ -285,8 +282,10 @@ function StartTimeout()
     // Don't emit if there are no connections
     if (players.length != 0)
     {
-      console.log("TuRn = " + turn);
-      players[turn].socket.emit('turn_over');
+      if (players[turn] != undefined)
+      {
+        players[turn].socket.emit('turn_over');
+      }
     }
     NextTurn();
   }, MAX_WAIT);
@@ -301,14 +300,14 @@ function ResetTimeout()
 
 function ShowConnections()
 {
-  // console.log("vvvvvvvvvvv");
-  // console.log("Connections: " + connections.length);
-  //
-  // for (var i = 0; i< connections.length; i++)
-  // {
-  //   console.log(" Connection " + i + ": " + connections[i].id);
-  // }
-  // console.log("^^^^^^^^^^^");
+  console.log("vvvvvvvvvvv");
+  console.log("Connections: " + connections.length);
+
+  for (var i = 0; i< connections.length; i++)
+  {
+    console.log(" Connection " + i + ": " + connections[i].id);
+  }
+  console.log("^^^^^^^^^^^");
 }
 
 function GetDeck()
