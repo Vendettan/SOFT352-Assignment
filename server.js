@@ -170,7 +170,15 @@ io.sockets.on('connection', function(socket)
   // User actions
   socket.on('hit', function()
   {
-
+    // Search players
+    for (var i in players)
+    {
+      // Find player
+      if (socket.id == players[i].id)
+      {
+        Hit(i);
+      }
+    }
   });
   socket.on('stand', function()
   {
@@ -191,21 +199,36 @@ io.sockets.on('connection', function(socket)
     console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
     players = [];
     // Get all playing players
+    currentTurn = 0;
     players = connections.slice();
     Deal();
   });
 
   socket.on('pass_turn', function()
   {
-    gameStarted = true;
     // If players isn't null
     if (players.length != 0)
     {
+      var tempCurrentTurn = currentTurn % players.length - 1;
+
+      if (tempCurrentTurn < 0)
+      {
+        if (gameStarted == true)
+        {
+          tempCurrentTurn = players.length - 1;
+        }
+        else
+        {
+          tempCurrentTurn = 0;
+        }
+      }
+
+      gameStarted = true;
       // If it's the players turn
-      if (players[turn].socket.id == socket.id)
+      if (players[tempCurrentTurn].socket.id == socket.id)
       {
         ResetTimeout();
-        players[turn].socket.emit('turn_over');
+        players[tempCurrentTurn].socket.emit('turn_over');
         NextTurn();
       }
     }
@@ -213,7 +236,28 @@ io.sockets.on('connection', function(socket)
 
   socket.on('disconnect', function()
   {
-    // Remove connection that matches socket ID
+    // Pass turn
+    for (var i in players)
+    {
+      // Remove player that disconnects
+      if (socket.id == players[i].id)
+      {
+        var tempCurrentTurn = (currentTurn - 1);
+
+        if (tempCurrentTurn % players.length == i)
+        {
+          console.log('turn player disconnected');
+          players.splice(i, 1);
+          io.emit('pass_disconnect');
+        }
+        else
+        {
+          players.splice(i, 1);
+        }
+      }
+    }
+
+    // THEN remove connection that matches socket ID
     for (var i in connections)
     {
       // Remove connection
@@ -222,25 +266,7 @@ io.sockets.on('connection', function(socket)
         connections.splice(i, 1);
       }
     }
-    for (var i in players)
-    {
-      // Remove player
-      if (socket.id == players[i].id)
-      {
-        // If it is the turn of the payer disconnecting, pass turn
-        if (currentTurn++ % players.length == i)
-        {
-          socket.emit('pass_disconnect');
-        }
-        players.splice(i, 1);
-      }
 
-      // Subtract from turn if current turn isn't the first player
-      if (currentTurn++ % players.length != 0)
-      {
-        currentTurn--;
-      }
-    }
     // console.log("Connection: " + socket.id + " (" + address + ") has disconnected");
     console.log("Connection: " + socket.id + " has disconnected");
     ShowConnections();
@@ -277,6 +303,7 @@ function NextTurn()
 function StartTimeout()
 {
   console.log("start timeout");
+  var count1 = 10000;
   timeOut = setTimeout(function()
   {
     // Don't emit if there are no connections
@@ -351,35 +378,63 @@ function Deal()
     // And for every playing connected player
     for (var i in players)
     {
-      var card = GetCard();
       players[i].hand.push(GetCard());
     }
   }
 
-  var playerHands = []
-
-  // Add the dealer's hand
-  var dealerHand = new Hand("dealer", dealer.hand);
-  playerHands.push(dealerHand);
-
-  // Add the player hands
-  for (var i in players)
-  {
-    var newHand = new Hand(players[i].id, players[i].hand);
-    playerHands.push(newHand);
-  }
-  io.sockets.emit('deal', playerHands);
+  UpdateHands();
 }
 
 function UpdateHands()
 {
+  var playerHands = [];
 
+  var dealerHand = new Hand("dealer", dealer.hand);
+  playerHands.push(dealerHand);
+
+  for (var i in players)
+  {
+    var newHand = new Hand(players[i].id, players[i].hand, players[i].name);
+    playerHands.push(newHand);
+  }
+  io.sockets.emit('deal', playerHands);
 }
 
 function DealersTurn()
 {
   console.log("dealers turn");
   // End of dealers turn,
+}
+
+function Hit(i)
+{
+  players[i].hand.push(GetCard());
+  UpdateHands();
+  if (CheckIfBust(i))
+  {
+    players[i].socket.emit('bust');
+  }
+  // Once called, can't double
+}
+
+function Split(i)
+{
+
+}
+
+function CheckIfBust(i)
+{
+  console.log("Player total = " + players[i].Total());
+  if (players[i].Total() > 21)
+  {
+    console.log("Bust");
+    return true;
+  }
+  else
+  {
+    console.log("Not Bust");
+    return false;
+  }
 }
 
 function GetCard()
@@ -415,10 +470,11 @@ class Card
 
 class Hand
 {
-  constructor(id, hand)
+  constructor(id, hand, name)
   {
     this.id = id;
     this.hand = hand;
+    this.name = name;
   }
 }
 
@@ -439,14 +495,42 @@ class Player
     this.name = name;
     this.id = id;
     this.hand = [];
-    this.total = function()
+  }
+  Total() // Totals the hand, updates as necessary when it contains aces
+  {
+    var count = 0;
+    // Initial count
+    for (var i in this.hand)
     {
-      var count = 0;
-      for (var i in hand)
-      {
-        count += hand[i].weight;
-      }
-      return count;
+      count = parseInt(count) + parseInt(this.hand[i].weight);
     }
+
+    // If player total is bust
+    if (count > 21)
+    {
+      // For each card in hand
+      for (var i in this.hand)
+      {
+        // If the card is an ace
+        if (this.hand[i].name.includes("ace"))
+        {
+          // If the weight of the ace is still 11
+          if (this.hand[i].weight == 11)
+          {
+            this.hand[i].weight = 1;
+            break;
+          }
+        }
+      }
+    }
+
+    count = 0;
+    // Updated count
+    for (var i in this.hand)
+    {
+      count = parseInt(count) + parseInt(this.hand[i].weight);
+    }
+    console.log("Player Count = " + count);
+    return count;
   }
 }

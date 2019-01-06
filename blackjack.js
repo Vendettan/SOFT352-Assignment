@@ -18,9 +18,12 @@ window.onload = function(evt)
   deckImage.src = "CardImages/deck_bordered.png";
   context.drawImage(deckImage,20,20,135,170);
   // Dealer
-  context.rect(dealer[0] - 10, 10, 240, 160);
   context.fillStyle = "#014C12";
-  context.fill();
+  context.fillRect(dealer[0] - 10, 10, 240, 160);
+  context.fillStyle = "white";
+  context.font = "20px Trebuchet MS"
+  context.fillText("Dealer",dealer[0]+80,30);
+
 
   // Hide game & UI elements
   $(".game").hide();
@@ -79,12 +82,11 @@ function JoinIP()
 
     socket.on('deal', function(playerHands)
     {
+      // Get card images
       for (var i in playerHands)
       {
-        // console.log("playerHands[" + i + "].id = " + playerHands[i].id);
         for (var x in playerHands[i].hand)
         {
-          // console.log("playerHands[" + i + "] hand = " + playerHands[i].hand[x].name);
           playerHands[i].hand[x].image = GetImage(playerHands[i].hand[x].name);
         }
       }
@@ -93,7 +95,7 @@ function JoinIP()
       {
         for (var i in playerHands)
         {
-          ShowHand(playerHands[i].hand, playerHands[i].id);
+          ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
         }
       }, 200);
     });
@@ -113,11 +115,17 @@ function JoinIP()
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
+    socket.on('bust', function()
+    {
+      console.log("B U S T");
+      socket.emit('pass_turn');
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
       socket.emit('pass_turn');
-    })
+    });
   }
   else
   {
@@ -160,10 +168,8 @@ function CreateLobby()
     {
       for (var i in playerHands)
       {
-        // console.log("playerHands[" + i + "].id = " + playerHands[i].id);
         for (var x in playerHands[i].hand)
         {
-          // console.log("playerHands[" + i + "] hand = " + playerHands[i].hand[x].name);
           playerHands[i].hand[x].image = GetImage(playerHands[i].hand[x].name);
         }
       }
@@ -172,7 +178,7 @@ function CreateLobby()
       {
         for (var i in playerHands)
         {
-          ShowHand(playerHands[i].hand, playerHands[i].id);
+          ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
         }
       }, 200);
     });
@@ -191,11 +197,17 @@ function CreateLobby()
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
+    socket.on('bust', function()
+    {
+      console.log("B U S T");
+      socket.emit('pass_turn');
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
       socket.emit('pass_turn');
-    })
+    });
 
     $("#createInputIP").val("");
     $("#createUserName").val("");
@@ -221,18 +233,16 @@ function ShowPlayers(users)
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-
+  context.fillStyle = "#014C12";
   if (users == 1)
   {
     context.rect(play1[0] - 10, 430, 240, 160);
-    context.fillStyle = "014C12";
     context.fill();
   }
   else if (users == 2)
   {
     context.rect(play2[0] - 10, 430, 240, 160);
     context.rect(play2[1] - 10, 430, 240, 160);
-    context.fillStyle = "014C12";
     context.fill();
   }
   else if (users == 3)
@@ -240,7 +250,6 @@ function ShowPlayers(users)
     context.rect(play3[0] - 10, 430, 240, 160);
     context.rect(play3[1] - 10, 430, 240, 160);
     context.rect(play3[2] - 10, 430, 240, 160);
-    context.fillStyle = "014C12";
     context.fill();
   }
   else if (users == 4)
@@ -249,13 +258,12 @@ function ShowPlayers(users)
     context.rect(play4[1] - 10, 430, 240, 160);
     context.rect(play4[2] - 10, 430, 240, 160);
     context.rect(play4[3] - 10, 430, 240, 160);
-    context.fillStyle = "014C12";
     context.fill();
   }
 }
 
 // Show card at given position
-function ShowHand(hand, playerID)
+function ShowHand(hand, playerID, userName)
 {
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
@@ -267,7 +275,7 @@ function ShowHand(hand, playerID)
     var tempDealer = dealer.slice();
     for (var i in hand)
     {
-      context.drawImage(hand[i].image,tempDealer[0],30,85,120);
+      context.drawImage(hand[i].image,tempDealer[0],40,85,120);
       tempDealer[0] += 20;
     }
   }
@@ -276,9 +284,16 @@ function ShowHand(hand, playerID)
   if (playerCnt == 1)
   {
     var tempPlay1 = play1.slice();
+    if (playerID == "player0")
+    {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay1[0]+20,450);
+    }
     for (var i in hand)
     {
-      context.drawImage(hand[i].image,tempPlay1[0],450,85,120);
+      context.drawImage(hand[i].image,tempPlay1[0],460,85,120);
       tempPlay1[0] += 20;
     }
   }
@@ -287,17 +302,25 @@ function ShowHand(hand, playerID)
     var tempPlay2 = play2.slice();
     if (playerID == "player0")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay2[0]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay2[0],450,85,120);
+        context.drawImage(hand[i].image,tempPlay2[0],460,85,120);
         tempPlay2[0] += 20;
       }
     }
     else if (playerID == "player1")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay2[1]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay2[1],450,85,120);
+        context.drawImage(hand[i].image,tempPlay2[1],460,85,120);
         tempPlay2[1] += 20;
       }
     }
@@ -307,25 +330,37 @@ function ShowHand(hand, playerID)
     var tempPlay3 = play3.slice();
     if (playerID == "player0")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay3[0]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay3[0],450,85,120);
+        context.drawImage(hand[i].image,tempPlay3[0],460,85,120);
         tempPlay3[0] += 20;
       }
     }
     else if (playerID == "player1")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay3[1]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay3[1],450,85,120);
+        context.drawImage(hand[i].image,tempPlay3[1],460,85,120);
         tempPlay3[1] += 20;
       }
     }
     else if (playerID == "player2")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay3[2]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay3[2],450,85,120);
+        context.drawImage(hand[i].image,tempPlay3[2],460,85,120);
         tempPlay3[2] += 20;
       }
     }
@@ -335,33 +370,49 @@ function ShowHand(hand, playerID)
     var tempPlay4 = play4.slice();
     if (playerID == "player0")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay4[0]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay4[0],450,85,120);
+        context.drawImage(hand[i].image,tempPlay4[0],460,85,120);
         tempPlay4[0] += 20;
       }
     }
     else if (playerID == "player1")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay4[1]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay4[1],450,85,120);
+        context.drawImage(hand[i].image,tempPlay4[1],460,85,120);
         tempPlay4[1] += 20;
       }
     }
     else if (playerID == "player2")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay4[2]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay4[2],450,85,120);
+        context.drawImage(hand[i].image,tempPlay4[2],460,85,120);
         tempPlay4[2] += 20;
       }
     }
     else if (playerID == "player3")
     {
+      context.fillStyle = "white";
+      context.font = "20px Trebuchet MS";
+      console.log("username = " + userName);
+      context.fillText(userName,tempPlay4[3]+20,450);
       for (var i in hand)
       {
-        context.drawImage(hand[i].image,tempPlay4[3],450,85,120);
+        context.drawImage(hand[i].image,tempPlay4[3],460,85,120);
         tempPlay4[3] += 20;
       }
     }
@@ -385,10 +436,6 @@ function StartGame()
 function Hit()
 {
   socket.emit('hit');
-  socket.on('hit_return', function(card, position)
-  {
-
-  });
 }
 
 function Stand()
