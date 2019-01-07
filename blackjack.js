@@ -143,11 +143,11 @@ function JoinIP()
       console.log('dealer STAND');
     });
 
-    socket.on('end_game', function()
-    {
-      console.log("end game");
-      $("#buttonStart").show();
-    });
+    // socket.on('end_game', function()
+    // {
+    //   console.log("end game");
+    //   $("#buttonStart").show();
+    // });
 
     socket.on('pass_disconnect', function()
     {

@@ -483,7 +483,7 @@ function DealersTurn()
 
   setTimeout(function()
   {
-    io.sockets.emit('end_game');
+    connections[0].socket.emit('end_game');
   },3000);
   // End of dealers turn.
 }
