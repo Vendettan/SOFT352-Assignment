@@ -83,7 +83,7 @@ function JoinIP()
       playerCnt = playerCount;
     });
 
-    ssocket.on('deal', function(playerHands)
+    socket.on('deal', function(playerHands)
     {
       for (var i in playerHands)
       {
