@@ -207,6 +207,7 @@ io.sockets.on('connection', function(socket)
     {
       players[i].hand = [];
     }
+    dealer.hand = [];
 
     Deal();
   });
@@ -482,10 +483,7 @@ function DealersTurn()
 
   setTimeout(function()
   {
-    if (connections.length != 0)
-    {
-      connections[0].socket.emit('end_game');
-    }
+    io.sockets.emit('end_game');
   },3000);
   // End of dealers turn.
 }
