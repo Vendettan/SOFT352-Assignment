@@ -273,7 +273,7 @@ function ResetCanvas()
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
 
-  context.Clear();
+  context.clearRect(0, 0, canvas.width, canvas.height);
   // Deck
   var deckImage = document.createElement('img');
   deckImage.src = "CardImages/deck_bordered.png";
