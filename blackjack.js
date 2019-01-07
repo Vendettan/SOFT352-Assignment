@@ -83,7 +83,7 @@ function JoinIP()
       playerCnt = playerCount;
     });
 
-    socket.on('deal', function(playerHands)
+    ssocket.on('deal', function(playerHands)
     {
       for (var i in playerHands)
       {
@@ -99,7 +99,7 @@ function JoinIP()
         {
           if (playerHands[i].id == "dealer")
           {
-            ShowDealer(playerHands[i].hand);
+            ShowDealer(playerHands[i].hand, playerHands[i].total);
           }
           else
           {
