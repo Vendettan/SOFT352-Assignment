@@ -28,7 +28,6 @@ window.onload = function(evt)
   context.font = "20px Trebuchet MS"
   context.fillText("Dealer",dealer[0]+80,30);
 
-
   // Hide game & UI elements
   $(".game").hide();
   $("#buttonCreate").click(function()
@@ -247,6 +246,12 @@ function CreateLobby()
       console.log('dealer STAND');
     });
 
+    socket.on('end_game', function()
+    {
+      console.log("end game");
+      $("#buttonStart").show();
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
@@ -260,6 +265,28 @@ function CreateLobby()
   {
     alert("Name and IP fields must be occupied");
   }
+}
+
+function ResetCanvas()
+{
+  // Get canvas to draw on
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  // Deck
+  var deckImage = document.createElement('img');
+  deckImage.src = "CardImages/deck_bordered.png";
+  setTimeout(function()
+  {
+    context.drawImage(deckImage,20,20,135,170);
+  },100);
+  // Dealer
+  context.fillStyle = "#014C12";
+  context.fillRect(dealer[0] - 10, 10, 240, 160);
+  context.fillStyle = "white";
+  context.font = "20px Trebuchet MS"
+  context.fillText("Dealer",dealer[0]+80,30);
+
+  PlayerSelect(playerCnt);
 }
 
 function PlayerSelect(users)
@@ -545,6 +572,7 @@ function GetImage(name)
 function StartGame()
 {
   $("#buttonStart").hide();
+  ResetCanvas();
   dealerTurn = false;
   socket.emit('new_round');
   socket.emit('pass_turn');
@@ -558,11 +586,6 @@ function Hit()
 function Stand()
 {
   socket.emit('pass_turn');
-}
-
-function Double()
-{
-  socket.emit('double');
 }
 
 function Split()

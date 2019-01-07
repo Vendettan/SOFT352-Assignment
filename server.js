@@ -31,6 +31,7 @@ io.sockets.on('connection', function(socket)
   // Get deck once
   if (executed == false)
   {
+    deck = []
     GetDeck();
   }
 
@@ -184,10 +185,6 @@ io.sockets.on('connection', function(socket)
   {
     // Passes turn
   });
-  socket.on('double', function()
-  {
-
-  });
   socket.on('split', function()
   {
 
@@ -196,12 +193,21 @@ io.sockets.on('connection', function(socket)
   // At the start of the round
   socket.on('new_round', function()
   {
+    deck = []
+    GetDeck();
     console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
     players = [];
     // Get all playing players
     currentTurn = 0;
     gameStarted = false;
     players = connections.slice();
+
+    // Clear hands
+    for (var i in players)
+    {
+      players[i].hand = [];
+    }
+
     Deal();
   });
 
@@ -388,10 +394,10 @@ function Shuffle(array)
   }
 
   // Print deck
-  for (var i in deck)
-  {
-    console.log(deck[i].name);
-  }
+  // for (var i in deck)
+  // {
+  //   console.log(deck[i].name);
+  // }
 }
 
 function Deal()
@@ -400,7 +406,7 @@ function Deal()
   for (var x = 0; x < 2; x++)
   {
     // For the dealer
-    dealer.hand.push(GetCard());
+    // dealer.hand.push(GetCard());
     // And for every playing connected player
     for (var i in players)
     {
@@ -408,6 +414,9 @@ function Deal()
     }
   }
 
+  var ace = new Card("ace_of_spades.png");
+  var six = new Card("6_of_hearts.png");
+  dealer.hand.push(ace, six);
   UpdateHands();
 }
 
@@ -446,7 +455,9 @@ function DealersTurn()
     }
     else if (dealer.Total() == 17)   // If soft 17, hit again
     {
+      console.log("thing");
       Soft17();
+      break;
     }
     else
     {
@@ -468,6 +479,14 @@ function DealersTurn()
 
   console.log("this is reached");
   io.sockets.emit('turn_over');
+
+  setTimeout(function()
+  {
+    if (connections.length != 0)
+    {
+      connections[0].socket.emit('end_game');
+    }
+  },3000);
   // End of dealers turn.
 }
 
@@ -485,7 +504,8 @@ function Soft17()
         if (dealer.hand[i].weight == 11)
         {
           console.log("     Ace is 11");
-          while (dealer.Total() <= 21)
+          dealer.hand[i].weight = 1;
+          while (dealer.Total() < 17)
           {
             console.log("     Hits dealer");
             dealer.hand.push(GetCard());
@@ -500,6 +520,7 @@ function Soft17()
       }
     }
   }
+
 }
 
 function DealerHit()
@@ -527,12 +548,10 @@ function Hit(i)
   {
     players[i].socket.emit('bust');
   }
-  // Once called, can't double
 }
 
 function Split(i)
 {
-
 }
 
 function CheckIfBust(i)
@@ -679,7 +698,6 @@ class Player
     {
       count = parseInt(count) + parseInt(this.hand[i].weight);
     }
-    console.log("Player Count = " + count);
     return count;
   }
 }
