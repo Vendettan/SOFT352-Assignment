@@ -16,7 +16,7 @@ var dealer;
 var currentTurn = 0;
 var timeOut;
 var turn = 0;
-const MAX_WAIT = 10000;
+const MAX_WAIT = 20000;
 
   // Coords should automatically updte client-side
 // Define coordinates for different gamemodes
@@ -211,7 +211,6 @@ io.sockets.on('connection', function(socket)
     if (players.length != 0)
     {
       var tempCurrentTurn = currentTurn % players.length - 1;
-      console.log("tempCurrentTurn before: " + tempCurrentTurn);
       if (tempCurrentTurn < 0)
       {
         if (gameStarted == true)
@@ -223,7 +222,6 @@ io.sockets.on('connection', function(socket)
           tempCurrentTurn = 0;
         }
       }
-      console.log("tempCurrentTurn after: " + tempCurrentTurn);
 
       gameStarted = true;
       // If it's the players turn
@@ -285,17 +283,34 @@ function NextTurn()
 {
   if (players.length != 0)
   {
-    // If all players have played
-    if (turn == (players.length - 1))
-    {
-      DealersTurn();
-    }
-    else
+    // If there's only 1 player
+    if (players.length == 1)
     {
       turn = currentTurn++ % players.length;
       players[turn].socket.emit('your_turn');
       console.log('next turn triggered: ', turn);
       StartTimeout();
+      if (currentTurn == 2)
+      {
+        DealersTurn();
+      }
+    }
+    else
+    {
+      // If all players have played
+      if (turn == (players.length - 1))
+      {
+        console.log("turn = " + turn);
+        console.log("(players.length - 1) = " + (players.length - 1));
+        DealersTurn();
+      }
+      else
+      {
+        turn = currentTurn++ % players.length;
+        players[turn].socket.emit('your_turn');
+        console.log('next turn triggered: ', turn);
+        StartTimeout();
+      }
     }
   }
 }
@@ -350,6 +365,9 @@ function GetDeck()
     deck.push(tempCard);
   }
   Shuffle(deck);
+  Shuffle(deck);
+  Shuffle(deck);
+
   console.log("=== DECK SHUFFLED ===\n") ;
 }
 
@@ -360,8 +378,6 @@ function Shuffle(array)
   {
     // Get random index
     j = Math.floor(Math.random() * (i + 1));
-    console.log("i = " + i);
-    console.log(" j = " + j);
 
     // Store value at current index
     x = array[i];
@@ -372,10 +388,10 @@ function Shuffle(array)
   }
 
   // Print deck
-  // for (var i in deck)
-  // {
-  //   console.log(deck[i].name);
-  // }
+  for (var i in deck)
+  {
+    console.log(deck[i].name);
+  }
 }
 
 function Deal()
@@ -404,7 +420,7 @@ function UpdateHands()
 
   for (var i in players)
   {
-    var newHand = new Hand(players[i].id, players[i].hand, players[i].name);
+    var newHand = new Hand(players[i].id, players[i].hand, players[i].name, players[i].Total());
     playerHands.push(newHand);
   }
   io.sockets.emit('deal', playerHands);
@@ -412,55 +428,95 @@ function UpdateHands()
 
 function DealersTurn()
 {
-  console.log("dealers turn");
+  ResetTimeout();
+  console.log("Dealer Turn");
+  console.log("------------");
   io.sockets.emit('dealer_turn');
   UpdateHands();
 
-  // Hit while less than 17
-  while (dealer.Total() < 17)
-  {
-    DealerHit();
-    io.sockets.emit('dealer_turn');
-    // UpdateHands();
-  }
+  var finishedChecks = false;
 
-  // If soft 17, hit again
-  if (dealer.Total() == 17)
+  while (finishedChecks == false)
   {
-    for (var i in dealer.hand)
+    // Hit while less than 17
+    if (dealer.Total() < 17)
     {
-      if (dealer.hand[i].name.includes("ace"))
-      {
-        while (dealer.Total() <= 21)
-        {
-          DealerHit();
-          io.sockets.emit('dealer_turn');
-          // UpdateHands();
-        }
-      }
+      console.log("hit");
+      DealerHit();
+    }
+    else if (dealer.Total() == 17)   // If soft 17, hit again
+    {
+      Soft17();
+    }
+    else
+    {
+      console.log("finishedChecks = true");
+      finishedChecks = true;
     }
   }
 
-  // If bust, emit dealer bust
   if (dealer.Total() > 21)
   {
+    console.log("Dealer Busts");
     io.sockets.emit('dealer_bust');
   }
   else
   {
+    console.log("Dealer Stands");
     io.sockets.emit('dealer_stand');
   }
 
+  console.log("this is reached");
+  io.sockets.emit('turn_over');
   // End of dealers turn.
+}
+
+function Soft17()
+{
+  console.log("Checking SOFT17");
+  if (dealer.Total() == 17)
+  {
+    console.log(" Equals 17");
+    for (var i in dealer.hand)
+    {
+      if (dealer.hand[i].name.includes("ace"))
+      {
+        console.log("   Includes Ace");
+        if (dealer.hand[i].weight == 11)
+        {
+          console.log("     Ace is 11");
+          while (dealer.Total() <= 21)
+          {
+            console.log("     Hits dealer");
+            dealer.hand.push(GetCard());
+            UpdateHands();
+            // io.sockets.emit('dealer_turn');
+            setTimeout(function()
+            {
+              Soft17();
+            },1000);
+          }
+        }
+      }
+    }
+  }
 }
 
 function DealerHit()
 {
-  setTimeout(function()
+  if (dealer.Total() < 17)
   {
+    console.log("He hits");
     // Hit
     dealer.hand.push(GetCard());
-  }, 1000);
+    Soft17();
+    UpdateHands();
+    // io.sockets.emit('dealer_turn');
+    setTimeout(function()
+    {
+      DealerHit();
+    },1000);
+  }
 }
 
 function Hit(i)
@@ -527,11 +583,12 @@ class Card
 
 class Hand
 {
-  constructor(id, hand, name)
+  constructor(id, hand, name, total)
   {
     this.id = id;
     this.hand = hand;
     this.name = name;
+    this.total = total;
   }
 }
 

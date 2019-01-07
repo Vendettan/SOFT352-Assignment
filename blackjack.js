@@ -104,7 +104,7 @@ function JoinIP()
           }
           else
           {
-            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total);
           }
         }
       }, 200);
@@ -114,13 +114,11 @@ function JoinIP()
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
-      // $(".actions :button").attr("disabled", false);
       $(".actions").find("button").removeAttr("disabled");
     });
     socket.on("turn_over", function()
     {
       console.log("Turn Over");
-      // $(".actions :button").attr("disabled", true);
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
@@ -209,7 +207,7 @@ function CreateLobby()
           }
           else
           {
-            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total);
           }
         }
       }, 200);
@@ -219,13 +217,11 @@ function CreateLobby()
     socket.on("your_turn", function()
     {
       console.log("Your Turn");
-      // $(".actions :button").attr("disabled", false);
       $(".actions").find("button").removeAttr("disabled");
     });
     socket.on("turn_over", function()
     {
       console.log("Turn Over");
-      // $(".actions :button").attr("disabled", true);
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
@@ -311,7 +307,7 @@ function ShowPlayers(users)
 }
 
 // Show card at given position
-function ShowHand(hand, playerID, userName)
+function ShowHand(hand, playerID, userName, total)
 {
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
@@ -325,8 +321,14 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay1[0]+20,450);
+
+      // Update total
+      context.clearRect(tempPlay1[0]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay1[0]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay1[0]+200,450);
     }
     for (var i in hand)
     {
@@ -341,8 +343,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay2[0]+20,450);
+      // Update total
+      context.clearRect(tempPlay2[0]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay2[0]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay2[0]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[0],460,85,120);
@@ -353,8 +360,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay2[1]+20,450);
+      // Update total
+      context.clearRect(tempPlay2[1]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay2[1]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay2[1]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[1],460,85,120);
@@ -369,8 +381,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay3[0]+20,450);
+      // Update total
+      context.clearRect(tempPlay3[0]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay3[0]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay3[0]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[0],460,85,120);
@@ -381,8 +398,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay3[1]+20,450);
+      // Update total
+      context.clearRect(tempPlay3[1]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay3[1]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay3[1]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[1],460,85,120);
@@ -393,8 +415,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay3[2]+20,450);
+      // Update total
+      context.clearRect(tempPlay3[2]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay3[2]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay3[2]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[2],460,85,120);
@@ -409,8 +436,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay4[0]+20,450);
+      // Update total
+      context.clearRect(tempPlay4[0]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay4[0]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay4[0]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[0],460,85,120);
@@ -421,8 +453,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay4[1]+20,450);
+      // Update total
+      context.clearRect(tempPlay4[1]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay4[1]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay4[1]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[1],460,85,120);
@@ -433,8 +470,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay4[2]+20,450);
+      // Update total
+      context.clearRect(tempPlay4[2]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay4[2]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay4[2]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[2],460,85,120);
@@ -445,8 +487,13 @@ function ShowHand(hand, playerID, userName)
     {
       context.fillStyle = "white";
       context.font = "20px Trebuchet MS";
-      console.log("username = " + userName);
       context.fillText(userName,tempPlay4[3]+20,450);
+      // Update total
+      context.clearRect(tempPlay4[3]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay4[3]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay4[3]+200,450);
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[3],460,85,120);
@@ -464,10 +511,10 @@ function ShowDealer(hand)
 
   // Print dealer hand
   var tempDealer = dealer.slice();
+
   // If its the dealers turn, reveal the hand
   if (dealerTurn == true)
   {
-    console.log("dealer turn = true");
     for (var i in hand)
     {
       context.drawImage(hand[i].image,tempDealer[0],40,85,120);
@@ -476,7 +523,6 @@ function ShowDealer(hand)
   }
   else // Show the first card and a card back
   {
-    console.log("dealer turn = false");
     context.drawImage(hand[0].image,tempDealer[0],40,85,120);
     tempDealer[0] += 20;
 
