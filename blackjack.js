@@ -136,6 +136,16 @@ function JoinIP()
       ShowDealer();
     });
 
+    socket.on('dealer_bust', function()
+    {
+      console.log("dealer BUST");
+    });
+
+    socket.on('dealer_stand', function()
+    {
+      console.log('dealer STAND');
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
@@ -229,6 +239,16 @@ function CreateLobby()
     {
       dealerTurn = true;
       ShowDealer();
+    });
+
+    socket.on('dealer_bust', function()
+    {
+      console.log("dealer BUST");
+    });
+
+    socket.on('dealer_stand', function()
+    {
+      console.log('dealer STAND');
     });
 
     socket.on('pass_disconnect', function()

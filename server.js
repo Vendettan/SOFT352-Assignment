@@ -211,7 +211,7 @@ io.sockets.on('connection', function(socket)
     if (players.length != 0)
     {
       var tempCurrentTurn = currentTurn % players.length - 1;
-      // console.log("tempCurrentTurn before: " + tempCurrentTurn);
+      console.log("tempCurrentTurn before: " + tempCurrentTurn);
       if (tempCurrentTurn < 0)
       {
         if (gameStarted == true)
@@ -223,7 +223,7 @@ io.sockets.on('connection', function(socket)
           tempCurrentTurn = 0;
         }
       }
-      // console.log("tempCurrentTurn after: " + tempCurrentTurn);
+      console.log("tempCurrentTurn after: " + tempCurrentTurn);
 
       gameStarted = true;
       // If it's the players turn
@@ -360,6 +360,9 @@ function Shuffle(array)
   {
     // Get random index
     j = Math.floor(Math.random() * (i + 1));
+    console.log("i = " + i);
+    console.log(" j = " + j);
+
     // Store value at current index
     x = array[i];
     // Replace current index with random index value
@@ -367,6 +370,12 @@ function Shuffle(array)
     // Replace random index value with temporary variable
     array[j] = x;
   }
+
+  // Print deck
+  // for (var i in deck)
+  // {
+  //   console.log(deck[i].name);
+  // }
 }
 
 function Deal()
@@ -406,7 +415,52 @@ function DealersTurn()
   console.log("dealers turn");
   io.sockets.emit('dealer_turn');
   UpdateHands();
-  // End of dealers turn,
+
+  // Hit while less than 17
+  while (dealer.Total() < 17)
+  {
+    DealerHit();
+    io.sockets.emit('dealer_turn');
+    // UpdateHands();
+  }
+
+  // If soft 17, hit again
+  if (dealer.Total() == 17)
+  {
+    for (var i in dealer.hand)
+    {
+      if (dealer.hand[i].name.includes("ace"))
+      {
+        while (dealer.Total() <= 21)
+        {
+          DealerHit();
+          io.sockets.emit('dealer_turn');
+          // UpdateHands();
+        }
+      }
+    }
+  }
+
+  // If bust, emit dealer bust
+  if (dealer.Total() > 21)
+  {
+    io.sockets.emit('dealer_bust');
+  }
+  else
+  {
+    io.sockets.emit('dealer_stand');
+  }
+
+  // End of dealers turn.
+}
+
+function DealerHit()
+{
+  setTimeout(function()
+  {
+    // Hit
+    dealer.hand.push(GetCard());
+  }, 1000);
 }
 
 function Hit(i)
@@ -486,7 +540,42 @@ class Dealer
   constructor()
   {
     this.hand = [];
-    this.coords = [490, 605];
+  }
+  Total() // Totals the hand, updates as necessary when it contains aces
+  {
+    var count = 0;
+    // Initial count
+    for (var i in this.hand)
+    {
+      count = parseInt(count) + parseInt(this.hand[i].weight);
+    }
+
+    // If player total is bust
+    if (count > 21)
+    {
+      // For each card in hand
+      for (var i in this.hand)
+      {
+        // If the card is an ace
+        if (this.hand[i].name.includes("ace"))
+        {
+          // If the weight of the ace is still 11
+          if (this.hand[i].weight == 11)
+          {
+            this.hand[i].weight = 1;
+            break;
+          }
+        }
+      }
+    }
+
+    count = 0;
+    // Updated count
+    for (var i in this.hand)
+    {
+      count = parseInt(count) + parseInt(this.hand[i].weight);
+    }
+    return count;
   }
 }
 
