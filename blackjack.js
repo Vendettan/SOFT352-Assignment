@@ -143,12 +143,6 @@ function JoinIP()
       console.log('dealer STAND');
     });
 
-    // socket.on('end_game', function()
-    // {
-    //   console.log("end game");
-    //   $("#buttonStart").show();
-    // });
-
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
@@ -278,6 +272,8 @@ function ResetCanvas()
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
+
+  context.Clear();
   // Deck
   var deckImage = document.createElement('img');
   deckImage.src = "CardImages/deck_bordered.png";
