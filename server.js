@@ -425,7 +425,7 @@ function UpdateHands()
 {
   var playerHands = [];
 
-  var dealerHand = new Hand("dealer", dealer.hand);
+  var dealerHand = new Hand("dealer", dealer.hand, "", dealer.Total());
   playerHands.push(dealerHand);
 
   for (var i in players)

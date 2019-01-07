@@ -208,7 +208,7 @@ function CreateLobby()
         {
           if (playerHands[i].id == "dealer")
           {
-            ShowDealer(playerHands[i].hand);
+            ShowDealer(playerHands[i].hand, playerHands[i].total);
           }
           else
           {
@@ -536,7 +536,7 @@ function ShowHand(hand, playerID, userName, total)
   }
 }
 
-function ShowDealer(hand)
+function ShowDealer(hand, total)
 {
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
@@ -548,6 +548,21 @@ function ShowDealer(hand)
   // If its the dealers turn, reveal the hand
   if (dealerTurn == true)
   {
+    if (total != undefined)
+    {
+      // Update total
+      context.clearRect(tempDealer[0]+195, 10, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempDealer[0]+195, 10, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempDealer[0]+200,30);
+    }
+    // Update total
+    context.clearRect(tempDealer[0]+195, 10, 100, 25);
+    context.fillStyle = "#014C12";
+    context.fillRect(tempDealer[0]+195, 10, 35, 25);
+    context.fillStyle = "white";
+    context.fillText(total,tempDealer[0]+200,30);
     for (var i in hand)
     {
       context.drawImage(hand[i].image,tempDealer[0],40,85,120);
