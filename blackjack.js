@@ -1,5 +1,6 @@
 var socket;
 var playerCnt;
+var dealerTurn = false;
 
 // Player coordinates used for creating table spaces
 var dealer = [490];
@@ -16,7 +17,10 @@ window.onload = function(evt)
   // Deck
   var deckImage = document.createElement('img');
   deckImage.src = "CardImages/deck_bordered.png";
-  context.drawImage(deckImage,20,20,135,170);
+  setTimeout(function()
+  {
+    context.drawImage(deckImage,20,20,135,170);
+  },100);
   // Dealer
   context.fillStyle = "#014C12";
   context.fillRect(dealer[0] - 10, 10, 240, 160);
@@ -82,7 +86,6 @@ function JoinIP()
 
     socket.on('deal', function(playerHands)
     {
-      // Get card images
       for (var i in playerHands)
       {
         for (var x in playerHands[i].hand)
@@ -95,7 +98,14 @@ function JoinIP()
       {
         for (var i in playerHands)
         {
-          ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+          if (playerHands[i].id == "dealer")
+          {
+            ShowDealer(playerHands[i].hand);
+          }
+          else
+          {
+            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+          }
         }
       }, 200);
     });
@@ -107,7 +117,6 @@ function JoinIP()
       // $(".actions :button").attr("disabled", false);
       $(".actions").find("button").removeAttr("disabled");
     });
-
     socket.on("turn_over", function()
     {
       console.log("Turn Over");
@@ -119,6 +128,12 @@ function JoinIP()
     {
       console.log("B U S T");
       socket.emit('pass_turn');
+    });
+
+    socket.on('dealer_turn', function()
+    {
+      dealerTurn = true;
+      ShowDealer();
     });
 
     socket.on('pass_disconnect', function()
@@ -178,7 +193,14 @@ function CreateLobby()
       {
         for (var i in playerHands)
         {
-          ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+          if (playerHands[i].id == "dealer")
+          {
+            ShowDealer(playerHands[i].hand);
+          }
+          else
+          {
+            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name);
+          }
         }
       }, 200);
     });
@@ -201,6 +223,12 @@ function CreateLobby()
     {
       console.log("B U S T");
       socket.emit('pass_turn');
+    });
+
+    socket.on('dealer_turn', function()
+    {
+      dealerTurn = true;
+      ShowDealer();
     });
 
     socket.on('pass_disconnect', function()
@@ -268,17 +296,6 @@ function ShowHand(hand, playerID, userName)
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-
-  // Print dealer hand
-  if (playerID == "dealer")
-  {
-    var tempDealer = dealer.slice();
-    for (var i in hand)
-    {
-      context.drawImage(hand[i].image,tempDealer[0],40,85,120);
-      tempDealer[0] += 20;
-    }
-  }
 
   // Print player hands
   if (playerCnt == 1)
@@ -419,6 +436,39 @@ function ShowHand(hand, playerID, userName)
   }
 }
 
+function ShowDealer(hand)
+{
+  // Get canvas to draw on
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+
+  // Print dealer hand
+  var tempDealer = dealer.slice();
+  // If its the dealers turn, reveal the hand
+  if (dealerTurn == true)
+  {
+    console.log("dealer turn = true");
+    for (var i in hand)
+    {
+      context.drawImage(hand[i].image,tempDealer[0],40,85,120);
+      tempDealer[0] += 20;
+    }
+  }
+  else // Show the first card and a card back
+  {
+    console.log("dealer turn = false");
+    context.drawImage(hand[0].image,tempDealer[0],40,85,120);
+    tempDealer[0] += 20;
+
+    var cardBack = document.createElement('img');
+    cardBack.src = "CardImages/card_back.png";
+    setTimeout(function()
+    {
+      context.drawImage(cardBack,tempDealer[0],40,85,120);
+    },100);
+  }
+}
+
 function GetImage(name)
 {
   var img = document.createElement('img');
@@ -429,6 +479,7 @@ function GetImage(name)
 function StartGame()
 {
   $("#buttonStart").hide();
+  dealerTurn = false;
   socket.emit('new_round');
   socket.emit('pass_turn');
 }

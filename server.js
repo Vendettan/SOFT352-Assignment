@@ -200,6 +200,7 @@ io.sockets.on('connection', function(socket)
     players = [];
     // Get all playing players
     currentTurn = 0;
+    gameStarted = false;
     players = connections.slice();
     Deal();
   });
@@ -210,7 +211,7 @@ io.sockets.on('connection', function(socket)
     if (players.length != 0)
     {
       var tempCurrentTurn = currentTurn % players.length - 1;
-
+      // console.log("tempCurrentTurn before: " + tempCurrentTurn);
       if (tempCurrentTurn < 0)
       {
         if (gameStarted == true)
@@ -222,6 +223,7 @@ io.sockets.on('connection', function(socket)
           tempCurrentTurn = 0;
         }
       }
+      // console.log("tempCurrentTurn after: " + tempCurrentTurn);
 
       gameStarted = true;
       // If it's the players turn
@@ -267,7 +269,6 @@ io.sockets.on('connection', function(socket)
       }
     }
 
-    // console.log("Connection: " + socket.id + " (" + address + ") has disconnected");
     console.log("Connection: " + socket.id + " has disconnected");
     ShowConnections();
 
@@ -403,6 +404,8 @@ function UpdateHands()
 function DealersTurn()
 {
   console.log("dealers turn");
+  io.sockets.emit('dealer_turn');
+  UpdateHands();
   // End of dealers turn,
 }
 
