@@ -407,17 +407,13 @@ function Deal()
   for (var x = 0; x < 2; x++)
   {
     // For the dealer
-    // dealer.hand.push(GetCard());
+    dealer.hand.push(GetCard());
     // And for every playing connected player
     for (var i in players)
     {
       players[i].hand.push(GetCard());
     }
   }
-
-  var ace = new Card("ace_of_spades.png");
-  var six = new Card("6_of_hearts.png");
-  dealer.hand.push(ace, six);
   UpdateHands();
 }
 
