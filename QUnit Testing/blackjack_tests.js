@@ -31,8 +31,9 @@ class Dealer
   }
   Total() // Totals the hand, updates as necessary when it contains aces
   {
-    var count = 0;
     // Initial count
+    var count = 0;
+
     for (var i in this.hand)
     {
       count = parseInt(count) + parseInt(this.hand[i].weight);
@@ -112,4 +113,123 @@ class Player
     }
     return count;
   }
+}
+
+var deck = [];
+var dealer;
+
+function DealersTurn(newDealer)
+{
+  dealer = newDealer;
+  var finishedChecks = false;
+
+  while (finishedChecks == false)
+  {
+    // Hit while less than 17
+    if (dealer.Total() < 17)
+    {
+      console.log("hit");
+      DealerHit();
+    }
+    else if (dealer.Total() == 17)   // If soft 17, hit again
+    {
+      console.log("thing");
+      Soft17();
+      break;
+    }
+    else
+    {
+      console.log("finishedChecks = true");
+      finishedChecks = true;
+    }
+  }
+
+  if (dealer.Total() > 21)
+  {
+    console.log("Dealer Busts");
+    io.sockets.emit('dealer_bust');
+  }
+  else
+  {
+    console.log("Dealer Stands");
+    io.sockets.emit('dealer_stand');
+  }
+
+  console.log("this is reached");
+  io.sockets.emit('turn_over');
+
+  setTimeout(function()
+  {
+    connections[0].socket.emit('end_game');
+  },3000);
+  // End of dealers turn.
+}
+
+function Soft17()
+{
+  console.log("Checking SOFT17");
+  if (dealer.Total() == 17)
+  {
+    console.log(" Equals 17");
+    for (var i in dealer.hand)
+    {
+      if (dealer.hand[i].name.includes("ace"))
+      {
+        console.log("   Includes Ace");
+        if (dealer.hand[i].weight == 11)
+        {
+          console.log("     Ace is 11");
+          dealer.hand[i].weight = 1;
+          while (dealer.Total() < 17)
+          {
+            console.log("     Hits dealer");
+            dealer.hand.push(GetCard());
+            // io.sockets.emit('dealer_turn');
+            setTimeout(function()
+            {
+              Soft17();
+            },1000);
+          }
+        }
+      }
+    }
+  }
+}
+
+function DealerHit()
+{
+  if (dealer.Total() < 17)
+  {
+    console.log("He hits");
+    // Hit
+    dealer.hand.push(GetCard());
+    Soft17();
+    // io.sockets.emit('dealer_turn');
+    setTimeout(function()
+    {
+      DealerHit();
+    },1000);
+  }
+}
+
+function GetDeck()
+{
+  executed = true;
+  path = "./CardImages/Deck"
+  var fs = require("fs");
+  files = fs.readdirSync(path);
+  for (var i in files)
+  {
+    var tempCard = new Card(files[i]);
+    deck.push(tempCard);
+  }
+  Shuffle(deck);
+  Shuffle(deck);
+  Shuffle(deck);
+}
+
+function GetCard()
+{
+  var card = deck.pop();
+  return card;
 }

@@ -9,42 +9,50 @@ QUnit.test("Checking correct creation of players", function(assert)
 
 QUnit.test("Checking player total function returns correctly", function(assert)
 {
-  var player2 = new Player("socket", "player2", "David");
+  var player = new Player("socket", "player2", "David");
 
-  assert.ok(player2, "Check player is not null");
-  assert.equal(player2.hand.length, 0, "Check player hand is empty");
+  assert.ok(player, "Check player is not null");
+  assert.equal(player.hand.length, 0, "Check player hand is empty");
 
   var king = new Card("king_of_spades.png");
   var four = new Card("4_of_diamonds.png");
 
-  player2.hand.push(king, four);
+  player.hand.push(king, four);
 
-  assert.equal(player2.hand.length, 2, "Check player hand length is 2");
-  assert.equal(player2.Total(), 14, "Check player Total() function returns correctly");
+  assert.equal(player.hand.length, 2, "Check player hand length is 2");
+  assert.equal(player.Total(), 14, "Check player Total() function returns correctly");
 });
 
 QUnit.test("Checking player total function returns correctly with an Ace", function(assert)
 {
-  var player3 = new Player("socket", "player3", "David");
+  var player = new Player("socket", "player3", "David");
 
-  assert.ok(player3, "Check player is not null");
+  assert.ok(player, "Check player is not null");
 
   var ace = new Card("ace_of_spades.png");
   var four = new Card("4_of_diamonds.png");
 
-  player3.hand.push(ace, four);
+  player.hand.push(ace, four);
 
-  assert.equal(player3.Total(), 15, "Check player Total() function returns correctly with ace as 11");
+  assert.equal(player.Total(), 15, "Check player Total() function returns correctly with ace as 11");
 
   var nine = new Card("9_of_hearts.png");
 
-  player3.hand.push(nine);
+  player.hand.push(nine);
 
-  assert.equal(player3.Total(), 14, "Check player Total() function returns correctly with ace as 1");
+  assert.equal(player.Total(), 14, "Check player Total() function returns correctly with ace as 1");
 });
 
-QUnit.test("Testing dealer hits when hand total is under 17", function()
+var dealer = new Dealer();
+
+var king = new Card("king_of_hearts.png");
+var four = new Card("4_of_diamonds.png");
+dealer.hand.push(king, four);
+DealersTurn();
+
+QUnit.test("Testing dealer hits when hand total is under 17", function(assert)
 {
+  var done = assert.async();
   var dealer = new Dealer();
 
   assert.ok(dealer, "Check dealer is not null");
@@ -54,8 +62,30 @@ QUnit.test("Testing dealer hits when hand total is under 17", function()
 
   dealer.hand.push(king, four);
 
-  DealersTurn();
+  setTimeout(function()
+  {
+    DealersTurn(dealer);
+    assert.ok(dealer.hand.length > 2, "Checking dealer hand has more than 2 cards (i.e. has hit)")
+    done();
+  },200);
+});
 
-  assert.ok(true, dealer.hand.length > 2, "Checking dealer hand has more than 2 cards (i.e. has hit)")
-  // assertTrue(dealer.hand.length > 2, "Checking dealer hand has more than 2 cards (i.e. has hit)");
+QUnit.test("Testing dealer doesn't hit when hand total is over 17", function(assert)
+{
+  var done = assert.async();
+  var dealer = new Dealer();
+
+  assert.ok(dealer, "Check dealer is not null");
+
+  var king = new Card("king_of_clubs.png");
+  var queen = new Card("queen_of_diamonds.png");
+
+  dealer.hand.push(king, queen);
+
+  setTimeout(function()
+  {
+    DealersTurn(dealer);
+    assert.ok(dealer.hand.length == 2, "Checking dealer hand has only 2 cards (i.e. has not hit)");
+    done();
+  },200);
 });

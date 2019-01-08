@@ -2620,15 +2620,14 @@
   	}
 
   	if (config.current) {
-      config.current.ignoreGlobalErrors = false;
   		if (config.current.ignoreGlobalErrors) {
   			return true;
   		}
   		pushFailure.apply(undefined, [error.message, error.fileName + ":" + error.lineNumber].concat(args));
   	} else {
-  		test("global failure", extend(function () {
-  			pushFailure.apply(undefined, [error.message, error.fileName + ":" + error.lineNumber].concat(args));
-  		}, { validTest: true }));
+  		// test("global failure", extend(function () {
+  		// 	pushFailure.apply(undefined, [error.message, error.fileName + ":" + error.lineNumber].concat(args));
+  		// }, { validTest: true }));
   	}
 
   	return false;
