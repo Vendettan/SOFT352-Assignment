@@ -595,6 +595,11 @@ function StartGame()
   socket.emit('pass_turn');
 }
 
+function TestFunction()
+{
+  return "potato";
+}
+
 function Hit()
 {
   socket.emit('hit');

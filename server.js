@@ -569,6 +569,11 @@ function GetCard()
   return card;
 }
 
+function ServerTestFunction()
+{
+  return "tomato";
+}
+
 class Card
 {
   constructor(name)
@@ -651,7 +656,7 @@ class Dealer
 
 class Player
 {
-  constructor(socket, id, name, coords)
+  constructor(socket, id, name)
   {
     this.socket = socket;
     this.name = name;

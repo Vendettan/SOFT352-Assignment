@@ -2620,6 +2620,7 @@
   	}
 
   	if (config.current) {
+      config.current.ignoreGlobalErrors = false;
   		if (config.current.ignoreGlobalErrors) {
   			return true;
   		}
