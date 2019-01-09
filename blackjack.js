@@ -143,6 +143,11 @@ function JoinIP()
       console.log('dealer STAND');
     });
 
+    socket.on('reset_canvas', function()
+    {
+      ResetCanvas();
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
@@ -252,6 +257,11 @@ function CreateLobby()
       $("#buttonStart").show();
     });
 
+    socket.on('reset_canvas', function()
+    {
+      ResetCanvas();
+    });
+
     socket.on('pass_disconnect', function()
     {
       console.log("pass disconnect");
@@ -272,8 +282,7 @@ function ResetCanvas()
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, 1200, 600);
   // Deck
   var deckImage = document.createElement('img');
   deckImage.src = "CardImages/deck_bordered.png";
@@ -589,7 +598,6 @@ function GetImage(name)
 function StartGame()
 {
   $("#buttonStart").hide();
-  ResetCanvas();
   dealerTurn = false;
   socket.emit('new_round');
   socket.emit('pass_turn');

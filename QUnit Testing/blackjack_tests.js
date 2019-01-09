@@ -1,3 +1,6 @@
+var deck = [];
+var dealer;
+
 class Card
 {
   constructor(name)
@@ -31,11 +34,13 @@ class Dealer
   }
   Total() // Totals the hand, updates as necessary when it contains aces
   {
+    console.log("Total() dealer hand length = " + dealer.hand.length);
     // Initial count
     var count = 0;
 
     for (var i in this.hand)
     {
+      console.log("i = " + i);
       count = parseInt(count) + parseInt(this.hand[i].weight);
     }
 
@@ -115,9 +120,6 @@ class Player
   }
 }
 
-var deck = [];
-var dealer;
-
 function DealersTurn(newDealer)
 {
   dealer = newDealer;
@@ -168,6 +170,7 @@ function DealersTurn(newDealer)
 function Soft17()
 {
   console.log("Checking SOFT17");
+  console.log("dealer hand length = " + dealer.hand.length);
   if (dealer.Total() == 17)
   {
     console.log(" Equals 17");
@@ -203,6 +206,7 @@ function DealerHit()
     console.log("He hits");
     // Hit
     dealer.hand.push(GetCard());
+    
     Soft17();
     // io.sockets.emit('dealer_turn');
     setTimeout(function()

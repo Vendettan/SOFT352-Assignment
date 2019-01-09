@@ -181,23 +181,17 @@ io.sockets.on('connection', function(socket)
       }
     }
   });
-  socket.on('stand', function()
-  {
-    // Passes turn
-  });
-  socket.on('split', function()
-  {
-
-  });
 
   // At the start of the round
   socket.on('new_round', function()
   {
+    io.sockets.emit('reset_canvas');
     deck = []
     GetDeck();
     console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
     players = [];
     // Get all playing players
+    turn = 0;
     currentTurn = 0;
     gameStarted = false;
     players = connections.slice();
@@ -479,7 +473,10 @@ function DealersTurn()
 
   setTimeout(function()
   {
-    connections[0].socket.emit('end_game');
+    if (connections.length != 0)
+    {
+      connections[0].socket.emit('end_game');
+    }
   },3000);
   // End of dealers turn.
 }
