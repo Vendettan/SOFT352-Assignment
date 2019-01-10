@@ -191,10 +191,11 @@ io.sockets.on('connection', function(socket)
     GetDeck();
     console.log("NEW ROUND LOOK THIS IS CALLED WOOP");
     players = [];
-    // Get all playing players
+    bustPlayers = [];
     turn = 0;
     currentTurn = 0;
     gameStarted = false;
+    // Get all playing players
     players = connections.slice();
 
     // Clear hands

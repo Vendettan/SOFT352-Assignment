@@ -407,14 +407,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay1[0]+20,450);
-
-        // Update total
-        context.clearRect(tempPlay1[0]+195, 430, 35, 25);
-        context.fillStyle = "#014C12";
-        context.fillRect(tempPlay1[0]+195, 430, 35, 25);
-        context.fillStyle = "white";
-        context.fillText(total,tempPlay1[0]+200,450);
       }
+      // Update total
+      context.clearRect(tempPlay1[0]+195, 430, 35, 25);
+      context.fillStyle = "#014C12";
+      context.fillRect(tempPlay1[0]+195, 430, 35, 25);
+      context.fillStyle = "white";
+      context.fillText(total,tempPlay1[0]+200,450);
+
     }
     for (var i in hand)
     {
@@ -432,13 +432,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay2[0]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay2[0]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay2[0]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay2[0]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[0],460,85,120);
@@ -452,13 +453,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay2[1]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay2[1]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay2[1]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay2[1]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[1],460,85,120);
@@ -476,13 +478,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay3[0]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay3[0]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay3[0]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay3[0]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[0],460,85,120);
@@ -496,13 +499,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay3[1]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay3[1]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay3[1]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay3[1]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[1],460,85,120);
@@ -516,13 +520,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay3[2]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay3[2]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay3[2]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay3[2]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[2],460,85,120);
@@ -540,13 +545,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay4[0]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay4[0]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay4[0]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay4[0]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[0],460,85,120);
@@ -560,13 +566,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay4[1]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay4[1]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay4[1]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay4[1]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[1],460,85,120);
@@ -580,13 +587,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay4[2]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay4[2]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay4[2]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay4[2]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[2],460,85,120);
@@ -600,13 +608,14 @@ function ShowHand(hand, playerID, userName, total, bust)
         context.fillStyle = "white";
         context.font = "20px Trebuchet MS";
         context.fillText(userName,tempPlay4[3]+20,450);
+      }
         // Update total
         context.clearRect(tempPlay4[3]+195, 430, 35, 25);
         context.fillStyle = "#014C12";
         context.fillRect(tempPlay4[3]+195, 430, 35, 25);
         context.fillStyle = "white";
         context.fillText(total,tempPlay4[3]+200,450);
-      }
+
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[3],460,85,120);
@@ -674,7 +683,9 @@ function StartGame()
 {
   $("#buttonStart").hide();
   dealerTurn = false;
+  console.log("bust before: " + bustPlayers);
   bustPlayers = null;
+  console.log("bust after: " + bustPlayers);
   socket.emit('new_round');
   socket.emit('pass_turn');
 }
@@ -696,12 +707,19 @@ function ShowWinners(winners)
   context.fillStyle = "white";
   context.font = "40px Trebuchet MS"
 
-  context.fillText("Winners! : ",520,250);
   var tempCoord = 300;
-  for (var i in winners)
+  if (playerCnt == 1)
   {
-    context.fillText(winners[i],520,tempCoord);
-    tempCoord += 50;
+    context.fillText("You Win!",520,tempCoord);
+  }
+  else
+  {
+    context.fillText("Winners! : ",520,250);
+    for (var i in winners)
+    {
+      context.fillText(winners[i],520,tempCoord);
+      tempCoord += 50;
+    }
   }
 }
 
@@ -793,6 +811,7 @@ function ShowBust(bustPlayers)
       }
     break;
     case "4":
+    console.log("bustPlayers = " + bustPlayers);
       if (bustPlayers.includes("player0"))
       {
         context.fillStyle = "red";
