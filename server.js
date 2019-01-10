@@ -458,6 +458,11 @@ function DealersTurn()
     }
   }
 
+  if (dealer.Total() > 21)
+  {
+    io.sockets.emit('dealer_bust');
+  }
+
   console.log("this is reached");
   io.sockets.emit('turn_over');
 

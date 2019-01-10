@@ -235,7 +235,7 @@ function CreateLobby()
           else
           {
             if (bustPlayers != null)
-            {
+            {x
               if (bustPlayers.includes(playerHands[i].id))
               {
                 ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total, true);
@@ -274,6 +274,11 @@ function CreateLobby()
     {
       dealerTurn = true;
       ShowDealer();
+    });
+
+    socket.on('dealer_bust', function()
+    {
+      DealerBust();
     });
 
     socket.on('end_game', function()
@@ -669,6 +674,7 @@ function StartGame()
 {
   $("#buttonStart").hide();
   dealerTurn = false;
+  bustPlayers = null;
   socket.emit('new_round');
   socket.emit('pass_turn');
 }
@@ -721,23 +727,21 @@ function NoWinners()
 
 function DealerBust()
 {
+  console.log("dealer bust");
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-  context.fillStyle = "black";
   context.font = "20px Trebuchet MS"
 
   context.fillStyle = "red";
-  context.fillRect(dealer[0]-10, 430, 240, 25);
+  context.fillRect(dealer[0]-10, 10, 240, 25);
   context.fillStyle = "white";
-  context.fillText("BUST",dealer[0]+90,450);
+  context.fillText("BUST",dealer[0]+90,30);
 }
 
 function ShowBust(bustPlayers)
 {
-  console.log("bustPlayer = " + bustPlayers);
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-  context.fillStyle = "black";
   context.font = "20px Trebuchet MS"
 
   switch (playerCnt)
