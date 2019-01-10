@@ -1,6 +1,7 @@
 var socket;
 var playerCnt;
 var dealerTurn = false;
+var bustPlayers;
 
 // Player coordinates used for creating table spaces
 var dealer = [490];
@@ -103,7 +104,17 @@ function JoinIP()
           }
           else
           {
-            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total);
+            if (bustPlayers != null)
+            {
+              if (bustPlayers.includes(playerHands[i].id))
+              {
+                ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total, true);
+              }
+            }
+            else
+            {
+              ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total, false);
+            }
           }
         }
       }, 200);
@@ -121,10 +132,12 @@ function JoinIP()
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
-    socket.on('bust', function()
+    socket.on('bust', function(busts)
     {
-      console.log("B U S T");
+      bustPlayers = busts;
+      $(".actions").find("button").attr("disabled", "disabled");
       socket.emit('pass_turn');
+      ShowBust(bustPlayers);
     });
 
     socket.on('dealer_turn', function()
@@ -135,17 +148,27 @@ function JoinIP()
 
     socket.on('dealer_bust', function()
     {
-      console.log("dealer BUST");
-    });
-
-    socket.on('dealer_stand', function()
-    {
-      console.log('dealer STAND');
+      DealerBust();
     });
 
     socket.on('reset_canvas', function()
     {
       ResetCanvas();
+    });
+
+    socket.on('show_winners', function(winners)
+    {
+      ShowWinners(winners);
+    });
+
+    socket.on('dealer_wins', function()
+    {
+      DealerWins();
+    });
+
+    socket.on('no_winners', function()
+    {
+      NoWinners();
     });
 
     socket.on('pass_disconnect', function()
@@ -211,7 +234,17 @@ function CreateLobby()
           }
           else
           {
-            ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total);
+            if (bustPlayers != null)
+            {
+              if (bustPlayers.includes(playerHands[i].id))
+              {
+                ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total, true);
+              }
+            }
+            else
+            {
+              ShowHand(playerHands[i].hand, playerHands[i].id, playerHands[i].name, playerHands[i].total, false);
+            }
           }
         }
       }, 200);
@@ -229,26 +262,18 @@ function CreateLobby()
       $(".actions").find("button").attr("disabled", "disabled");
     });
 
-    socket.on('bust', function()
+    socket.on('bust', function(busts)
     {
-      console.log("B U S T");
+      bustPlayers = busts;
+      $(".actions").find("button").attr("disabled", "disabled");
       socket.emit('pass_turn');
+      ShowBust(bustPlayers);
     });
 
     socket.on('dealer_turn', function()
     {
       dealerTurn = true;
       ShowDealer();
-    });
-
-    socket.on('dealer_bust', function()
-    {
-      console.log("dealer BUST");
-    });
-
-    socket.on('dealer_stand', function()
-    {
-      console.log('dealer STAND');
     });
 
     socket.on('end_game', function()
@@ -260,6 +285,21 @@ function CreateLobby()
     socket.on('reset_canvas', function()
     {
       ResetCanvas();
+    });
+
+    socket.on('show_winners', function(winners)
+    {
+      ShowWinners(winners);
+    });
+
+    socket.on('dealer_wins', function()
+    {
+      DealerWins();
+    });
+
+    socket.on('no_winners', function()
+    {
+      NoWinners();
     });
 
     socket.on('pass_disconnect', function()
@@ -345,7 +385,7 @@ function ShowPlayers(users)
 }
 
 // Show card at given position
-function ShowHand(hand, playerID, userName, total)
+function ShowHand(hand, playerID, userName, total, bust)
 {
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
@@ -357,16 +397,19 @@ function ShowHand(hand, playerID, userName, total)
     var tempPlay1 = play1.slice();
     if (playerID == "player0")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay1[0]+20,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay1[0]+20,450);
 
-      // Update total
-      context.clearRect(tempPlay1[0]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay1[0]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay1[0]+200,450);
+        // Update total
+        context.clearRect(tempPlay1[0]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay1[0]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay1[0]+200,450);
+      }
     }
     for (var i in hand)
     {
@@ -379,15 +422,18 @@ function ShowHand(hand, playerID, userName, total)
     var tempPlay2 = play2.slice();
     if (playerID == "player0")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay2[0]+20,450);
-      // Update total
-      context.clearRect(tempPlay2[0]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay2[0]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay2[0]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay2[0]+20,450);
+        // Update total
+        context.clearRect(tempPlay2[0]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay2[0]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay2[0]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[0],460,85,120);
@@ -396,15 +442,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player1")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay2[1]+20,450);
-      // Update total
-      context.clearRect(tempPlay2[1]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay2[1]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay2[1]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay2[1]+20,450);
+        // Update total
+        context.clearRect(tempPlay2[1]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay2[1]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay2[1]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay2[1],460,85,120);
@@ -417,15 +466,18 @@ function ShowHand(hand, playerID, userName, total)
     var tempPlay3 = play3.slice();
     if (playerID == "player0")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay3[0]+20,450);
-      // Update total
-      context.clearRect(tempPlay3[0]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay3[0]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay3[0]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay3[0]+20,450);
+        // Update total
+        context.clearRect(tempPlay3[0]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay3[0]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay3[0]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[0],460,85,120);
@@ -434,15 +486,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player1")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay3[1]+20,450);
-      // Update total
-      context.clearRect(tempPlay3[1]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay3[1]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay3[1]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay3[1]+20,450);
+        // Update total
+        context.clearRect(tempPlay3[1]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay3[1]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay3[1]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[1],460,85,120);
@@ -451,15 +506,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player2")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay3[2]+20,450);
-      // Update total
-      context.clearRect(tempPlay3[2]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay3[2]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay3[2]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay3[2]+20,450);
+        // Update total
+        context.clearRect(tempPlay3[2]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay3[2]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay3[2]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay3[2],460,85,120);
@@ -472,15 +530,18 @@ function ShowHand(hand, playerID, userName, total)
     var tempPlay4 = play4.slice();
     if (playerID == "player0")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay4[0]+20,450);
-      // Update total
-      context.clearRect(tempPlay4[0]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay4[0]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay4[0]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay4[0]+20,450);
+        // Update total
+        context.clearRect(tempPlay4[0]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay4[0]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay4[0]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[0],460,85,120);
@@ -489,15 +550,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player1")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay4[1]+20,450);
-      // Update total
-      context.clearRect(tempPlay4[1]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay4[1]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay4[1]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay4[1]+20,450);
+        // Update total
+        context.clearRect(tempPlay4[1]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay4[1]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay4[1]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[1],460,85,120);
@@ -506,15 +570,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player2")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay4[2]+20,450);
-      // Update total
-      context.clearRect(tempPlay4[2]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay4[2]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay4[2]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay4[2]+20,450);
+        // Update total
+        context.clearRect(tempPlay4[2]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay4[2]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay4[2]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[2],460,85,120);
@@ -523,15 +590,18 @@ function ShowHand(hand, playerID, userName, total)
     }
     else if (playerID == "player3")
     {
-      context.fillStyle = "white";
-      context.font = "20px Trebuchet MS";
-      context.fillText(userName,tempPlay4[3]+20,450);
-      // Update total
-      context.clearRect(tempPlay4[3]+195, 430, 35, 25);
-      context.fillStyle = "#014C12";
-      context.fillRect(tempPlay4[3]+195, 430, 35, 25);
-      context.fillStyle = "white";
-      context.fillText(total,tempPlay4[3]+200,450);
+      if (bust == false)
+      {
+        context.fillStyle = "white";
+        context.font = "20px Trebuchet MS";
+        context.fillText(userName,tempPlay4[3]+20,450);
+        // Update total
+        context.clearRect(tempPlay4[3]+195, 430, 35, 25);
+        context.fillStyle = "#014C12";
+        context.fillRect(tempPlay4[3]+195, 430, 35, 25);
+        context.fillStyle = "white";
+        context.fillText(total,tempPlay4[3]+200,450);
+      }
       for (var i in hand)
       {
         context.drawImage(hand[i].image,tempPlay4[3],460,85,120);
@@ -546,7 +616,7 @@ function ShowDealer(hand, total)
   // Get canvas to draw on
   var canvas = $("#MainCanvas");
   var context = canvas[0].getContext("2d");
-
+  context.font = "20px Trebuchet MS"
   // Print dealer hand
   var tempDealer = dealer.slice();
 
@@ -603,11 +673,6 @@ function StartGame()
   socket.emit('pass_turn');
 }
 
-function TestFunction()
-{
-  return "potato";
-}
-
 function Hit()
 {
   socket.emit('hit');
@@ -618,14 +683,142 @@ function Stand()
   socket.emit('pass_turn');
 }
 
-function Split()
+function ShowWinners(winners)
 {
-  socket.emit('split');
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  context.fillStyle = "white";
+  context.font = "40px Trebuchet MS"
+
+  context.fillText("Winners! : ",520,250);
+  var tempCoord = 300;
+  for (var i in winners)
+  {
+    context.fillText(winners[i],520,tempCoord);
+    tempCoord += 50;
+  }
 }
 
-function Bet()
+function DealerWins()
 {
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  context.fillStyle = "white";
+  context.font = "40px Trebuchet MS"
 
+  context.fillText("Dealer Wins",488,300);
+}
+
+function NoWinners()
+{
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  context.fillStyle = "white";
+  context.font = "40px Trebuchet MS"
+
+  context.fillText("No Winners",488,300);
+}
+
+function DealerBust()
+{
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  context.fillStyle = "black";
+  context.font = "20px Trebuchet MS"
+
+  context.fillStyle = "red";
+  context.fillRect(dealer[0]-10, 430, 240, 25);
+  context.fillStyle = "white";
+  context.fillText("BUST",dealer[0]+90,450);
+}
+
+function ShowBust(bustPlayers)
+{
+  console.log("bustPlayer = " + bustPlayers);
+  var canvas = $("#MainCanvas");
+  var context = canvas[0].getContext("2d");
+  context.fillStyle = "black";
+  context.font = "20px Trebuchet MS"
+
+  switch (playerCnt)
+  {
+    case "1":
+    if (bustPlayers.includes("player0"))
+    context.fillStyle = "red";
+    context.fillRect(play1[0]-10, 430, 240, 25);
+    context.fillStyle = "white";
+    context.fillText("BUST",play1[0]+90,450);
+    break;
+    case "2":
+      if (bustPlayers.includes("player0"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play2[0]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play2[0]+90,450);
+      }
+      if (bustPlayers.includes("player1"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play2[1]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play2[1]+90,450);
+      }
+    break;
+    case "3":
+      if (bustPlayers.includes("player0"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play3[0]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play3[0]+90,450);
+      }
+      if (bustPlayers.includes("player1"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play3[1]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play3[1]+90,450);
+      }
+      if (bustPlayers.includes("player2"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play3[2]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play3[2]+90,450);
+      }
+    break;
+    case "4":
+      if (bustPlayers.includes("player0"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play4[0]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play4[0]+90,450);
+      }
+      if (bustPlayers.includes("player1"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play4[1]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play4[1]+90,450);
+      }
+      if (bustPlayers.includes("player2"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play4[2]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play4[2]+90,450);
+      }
+      if (bustPlayers.includes("player3"))
+      {
+        context.fillStyle = "red";
+        context.fillRect(play4[3]-10, 430, 240, 25);
+        context.fillStyle = "white";
+        context.fillText("BUST",play4[3]+90,450);
+      }
+    break;
+  }
 }
 
 // Toggle functions with boolean inputs for error validation

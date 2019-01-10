@@ -9,6 +9,7 @@ var gameStarted = false;
 // Arrays for connections and deck management
 var connections = [];
 var players = [];
+var bustPlayers = [];
 var deck = [];
 var dealer;
 
@@ -457,17 +458,6 @@ function DealersTurn()
     }
   }
 
-  if (dealer.Total() > 21)
-  {
-    console.log("Dealer Busts");
-    io.sockets.emit('dealer_bust');
-  }
-  else
-  {
-    console.log("Dealer Stands");
-    io.sockets.emit('dealer_stand');
-  }
-
   console.log("this is reached");
   io.sockets.emit('turn_over');
 
@@ -478,6 +468,8 @@ function DealersTurn()
       connections[0].socket.emit('end_game');
     }
   },3000);
+
+  FindWinner();
   // End of dealers turn.
 }
 
@@ -501,7 +493,6 @@ function Soft17()
             console.log("     Hits dealer");
             dealer.hand.push(GetCard());
             UpdateHands();
-            // io.sockets.emit('dealer_turn');
             setTimeout(function()
             {
               Soft17();
@@ -523,7 +514,6 @@ function DealerHit()
     dealer.hand.push(GetCard());
     Soft17();
     UpdateHands();
-    // io.sockets.emit('dealer_turn');
     setTimeout(function()
     {
       DealerHit();
@@ -534,15 +524,98 @@ function DealerHit()
 function Hit(i)
 {
   players[i].hand.push(GetCard());
-  UpdateHands();
   if (CheckIfBust(i))
   {
-    players[i].socket.emit('bust');
+    bustPlayers.push(players[i].id);
+    io.sockets.emit('bust', bustPlayers);
   }
+  UpdateHands();
 }
 
-function Split(i)
+function FindWinner()
 {
+  var winner = false;
+  var winners = [];
+  var drawers = [];
+  // If the dealer isn't bust and doesn't have 21
+  if (dealer.Total() < 21)
+  {
+    console.log("dealer total < 21");
+
+    for (var i in players)
+    {
+      // If the player isn't bust
+      if (!CheckIfBust(i))
+      {
+        // If the player total is higher than the dealer total
+        if (players[i].Total() > dealer.Total())
+        {
+          winners.push(players[i].name);
+          winner = true;
+        } // If the player total is equal to the dealer total
+        else if (players[i].Total() == dealer.Total())
+        {
+          drawers.push(players[i].name);
+          winner = true;
+        }
+      }
+    }
+    if (winners.length != 0)
+    {
+      io.sockets.emit('show_winners', winners);
+    }
+    if (drawers.length != 0)
+    {
+      io.sockets.emit('show_drawers', drawers);
+    }
+  }
+  else if (dealer.Total() == 21) // If player draws with the dealer at 21
+  {
+    console.log("dealer total == 21");
+
+    for (var i in players)
+    {
+      if (players[i].Total() == dealer.Total()) // If the player has 21
+      {
+        drawers.push(players[i].name);
+        winner = true;
+      }
+    }
+    if (drawers.length != 0)
+    {
+      io.sockets.emit('show_drawers', drawers);
+    }
+  }
+  else // If the dealer is bust
+  {
+    console.log("dealer total is bust");
+
+    // All players who aren't bust automatically win
+    for (var i in players)
+    {
+      if (!CheckIfBust(i))
+      {
+        winners.push(players[i].name);
+        winner = true;
+      }
+    }
+    if (winners.length != 0)
+    {
+      io.sockets.emit('show_winners', winners);
+      winner = true;
+    }
+    else
+    {
+      io.sockets.emit('no_winners');
+      winner = true;
+    }
+  }
+
+  // If no players won
+  if (winner == false)
+  {
+    io.sockets.emit('dealer_wins');
+  }
 }
 
 function CheckIfBust(i)
@@ -564,11 +637,6 @@ function GetCard()
 {
   var card = deck.pop();
   return card;
-}
-
-function ServerTestFunction()
-{
-  return "tomato";
 }
 
 class Card
